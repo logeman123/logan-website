@@ -1,105 +1,81 @@
+import Link from 'next/link';
+import Image from 'next/image';
+
 export default function Home() {
   return (
-    <div className="fantasy-container p-8 my-8 relative">
-      {/* Decorative corners */}
-      <div className="corner-decoration corner-top-left" />
-      <div className="corner-decoration corner-top-right" />
-      <div className="corner-decoration corner-bottom-left" />
-      <div className="corner-decoration corner-bottom-right" />
-
-      {/* Education */}
-      <section id="education" className="fantasy-block p-6 mb-8">
-        <h2 className="fantasy-heading text-2xl mb-4">Education</h2>
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center">
-          <div>
-            <div className="font-bold text-lg">Hobart and William Smith Colleges, Geneva, NY</div>
-            <div className="italic text-gold">Anticipated May 2023</div>
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <div className="container mx-auto px-4 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="space-y-6">
+            <h1 className="text-6xl font-light tracking-tight text-black">
+              Logan
+              <br />
+              Schwappach
+            </h1>
+            <p className="text-xl text-gray-500">DEVELOPER 2024</p>
+            <Link 
+              href="/resume"
+              className="inline-block mt-4 text-pink-500 hover:text-pink-600 transition-colors"
+            >
+              VIEW DETAILS →
+            </Link>
           </div>
-          <div className="text-right mt-2 md:mt-0">
-            <div>Double Major, BA: Economics, International Relations <span className="font-mono text-xs">Major GPA 3.39</span></div>
-            <div>Minor: Computer Science <span className="font-mono text-xs">Overall GPA 3.18</span></div>
-          </div>
-        </div>
-      </section>
-
-      {/* Honors */}
-      <section id="honors" className="fantasy-block p-6 mb-8">
-        <h2 className="fantasy-heading text-2xl mb-4">Honors</h2>
-        <ul className="fantasy-list space-y-2">
-          <li>Dean&apos;s List (2020-2022)</li>
-          <li>National Merit Scholar (2019)</li>
-        </ul>
-      </section>
-
-      {/* Experience */}
-      <section id="experience" className="fantasy-block p-6 mb-8">
-        <h2 className="fantasy-heading text-2xl mb-4">Experience</h2>
-        <div className="space-y-6">
-          <div>
-            <div className="font-bold">Anne McGilvray and Company Inc, Sales</div>
-            <div className="italic text-gold">Jun – Aug 2022</div>
-            <ul className="fantasy-list mt-2 space-y-2">
-              <li>Attended the Atlanta and Las Vegas Gift Market representing vendors of AMCI, creating connections between buyers and vendors, trained new sales reps</li>
-              <li>Personally oversaw the sale of more than $75,000 worth of wholesale gifts</li>
-            </ul>
-          </div>
-          <div>
-            <div className="font-bold">SeaBay (Summer Sandbox), Co-Founder, Geneva, NY</div>
-            <div className="italic text-gold">May – Aug 2021</div>
-            <ul className="fantasy-list mt-2 space-y-2">
-              <li>Designed and coded front end for a functional market website to sell and trade Coral products using wordpress.org</li>
-              <li>Interviewed 120+ prospective customers, synthesized and presented information in a concise 6-minute presentation to coaches, startup accelerator teammates, and investors</li>
-            </ul>
-          </div>
-          <div>
-            <div className="font-bold">W. P. Carey, Summer Business Analyst, New York, NY</div>
-            <div className="italic text-gold">May – Aug 2020</div>
-            <ul className="fantasy-list mt-2">
-              <li>Cancelled due to COVID</li>
-            </ul>
-          </div>
-          <div>
-            <div className="font-bold">VSCO, Intern, San Francisco, CA</div>
-            <div className="italic text-gold">Apr – May 2019</div>
-            <ul className="fantasy-list mt-2 space-y-2">
-              <li>Conducted 50+ interviews of local high school students for market research focusing on changing trends in membership among younger demographics</li>
-              <li>Compiled extensive survey data using excel, created a detailed and engaging marketing presentation for high level executive and company employees</li>
-            </ul>
+          <div className="relative aspect-[3/4] bg-gray-100">
+            {/* Placeholder for hero image */}
+            <div className="absolute inset-0 bg-gray-200 flex items-center justify-center text-gray-400">
+              Image Placeholder
+            </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Projects */}
-      <section id="projects" className="fantasy-block p-6 mb-8">
-        <h2 className="fantasy-heading text-2xl mb-4">Projects</h2>
-        <ul className="fantasy-list space-y-2">
-          <li>Organizer For HWS: International Debate Round Robin (2021)</li>
-          <li>Volunteer Building Cat Houses for St. Gabriel the Archangel Church (2019)</li>
-          <li>Volunteer Animal Humane Society as Animal Technician (2017)</li>
-        </ul>
-      </section>
-
-      {/* Activities & Skills */}
-      <section id="skills" className="fantasy-block p-6">
-        <h2 className="fantasy-heading text-2xl mb-4">Activities & Skills</h2>
-        <div className="flex flex-col md:flex-row md:justify-between gap-8">
-          <div>
-            <div className="font-bold mb-2 text-gold">Activities</div>
-            <ul className="fantasy-list space-y-2">
-              <li>Debate and Speech Club</li>
-              <li>Pre-Orientation Adventure Program (POAP)</li>
-              <li>HWS Day of Service</li>
-            </ul>
-          </div>
-          <div>
-            <div className="font-bold mb-2 text-gold">Skills</div>
-            <ul className="fantasy-list space-y-2">
-              <li>Language: Intermediate Spanish, Basic Korean</li>
-              <li>Computer: Microsoft Office Suite, Java, Python</li>
-            </ul>
+      {/* Featured Projects Section */}
+      <div className="bg-gray-50 py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-light mb-12">Featured Projects</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Project 1 */}
+            <div className="group cursor-pointer">
+              <div className="relative aspect-square bg-gray-200 mb-4">
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                  Project Image 1
+                </div>
+              </div>
+              <h3 className="text-2xl font-light group-hover:text-pink-500 transition-colors">Project Name</h3>
+              <p className="text-gray-500">2024</p>
+            </div>
+            {/* Project 2 */}
+            <div className="group cursor-pointer">
+              <div className="relative aspect-square bg-gray-200 mb-4">
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                  Project Image 2
+                </div>
+              </div>
+              <h3 className="text-2xl font-light group-hover:text-pink-500 transition-colors">Project Name</h3>
+              <p className="text-gray-500">2024</p>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Experience Section */}
+      <div className="container mx-auto px-4 py-20">
+        <div className="flex justify-between items-start">
+          <div className="max-w-lg">
+            <h2 className="text-4xl font-light mb-6">We Have 20+ Years Practical Experience</h2>
+            <p className="text-gray-500 leading-relaxed">
+              Full stack developer with experience in modern web technologies and a passion for creating elegant, efficient solutions.
+            </p>
+          </div>
+          <Link 
+            href="/resume"
+            className="text-pink-500 hover:text-pink-600 transition-colors"
+          >
+            VIEW MORE →
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

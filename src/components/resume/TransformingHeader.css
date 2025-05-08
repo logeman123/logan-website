@@ -1,0 +1,62 @@
+/* TransformingHeader styles */
+.transforming-header {
+  font-family: 'Cinzel Decorative', cursive;
+  color: var(--gold);
+  text-shadow: 0 0 5px rgba(196, 161, 100, 0.5);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+.transforming-text {
+  cursor: pointer;
+  position: relative;
+  padding: 0 5px;
+  transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  letter-spacing: 0.05em;
+  text-align: left;
+}
+
+.transforming-text::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, transparent, var(--forest-green));
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+
+.transforming-text.revealed::after {
+  animation: revealSwipe 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.decorative-star {
+  color: var(--emerald);
+  opacity: 0.6;
+  font-size: 0.8em;
+}
+
+@keyframes revealText {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes revealSwipe {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+} 
