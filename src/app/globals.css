@@ -2,62 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Modern theme variables */
+/* Swiss design system variables */
 :root {
-  --primary: #ff3366;
-  --text-primary: #333333;
+  --text-primary: #1a1a1a;
   --text-secondary: #666666;
+  --background: #ffffff;
+  --accent: #ff3366;
+  --grid-gap: 2rem;
+}
+
+@layer base {
+  html {
+    font-feature-settings: "kern" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   color: var(--text-primary);
-  background: white;
+    background: var(--background);
+    line-height: 1.5;
+}
+}
+.nav-bar {
+  padding-right: 10px;
+}
+/* Swiss typography */
+.display-large {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
+.display-medium {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
-/* Modern hover effects */
-.hover-underline {
+.body-large {
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+/* Grid system */
+.swiss-grid {
+  display: grid;
+  gap: var(--grid-gap);
+  grid-template-columns: repeat(12, 1fr);
+}
+
+/* Smooth transitions */
+.transition-swiss {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Swiss hover effect */
+.hover-line {
   position: relative;
+  display: inline-block;
 }
 
-.hover-underline::after {
+.hover-line::after {
   content: '';
   position: absolute;
   width: 100%;
   height: 1px;
   bottom: -2px;
   left: 0;
-  background-color: var(--primary);
+  background-color: currentColor;
   transform: scaleX(0);
-  transform-origin: bottom right;
-  transition: transform 0.3s ease;
+  transform-origin: left;
+  transition: transform 0.4s ease;
 }
 
-.hover-underline:hover::after {
+.hover-line:hover::after {
   transform: scaleX(1);
-  transform-origin: bottom left;
 }
 
-/* Smooth transitions */
-.transition-all {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-}
-
-/* Image hover effects */
-.image-hover {
+/* Image container */
+.image-container {
+  position: relative;
   overflow: hidden;
+  background: #f5f5f5;
 }
 
-.image-hover img {
-  transition: transform 0.5s ease;
+.image-container img {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.image-hover:hover img {
-  transform: scale(1.05);
+.image-container:hover img {
+  transform: scale(1.03);
 }

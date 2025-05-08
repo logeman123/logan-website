@@ -7,18 +7,37 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'y2k-yellow': '#ffe100',
-        'y2k-orange': '#ff7f00',
-        'y2k-magenta': '#ff00c8',
-        'y2k-gray': '#e0e0e0',
-        'forest-green': '#0a2810',
-        'gold': '#c4a164',
-        'light-gold': '#e6d5b8',
-        'emerald': '#50c878',
+        'text-primary': 'var(--text-primary)',
+        'text-secondary': 'var(--text-secondary)',
+        'accent': 'var(--accent)',
+      },
+      spacing: {
+        '128': '32rem',
+        '144': '36rem',
+      },
+      container: {
+        center: true,
+        padding: {
+          DEFAULT: '1rem',
+          sm: '2rem',
+          lg: '4rem',
+          xl: '5rem',
+          '2xl': '6rem',
+        },
+        screens: {
+          sm: '640px',
+          md: '768px',
+          lg: '1024px',
+          xl: '1280px',
+          '2xl': '1536px',
+        },
       },
       fontFamily: {
-        orbitron: ['var(--font-orbitron)', 'sans-serif'],
-        cinzel: ['var(--font-cinzel-decorative)', 'cursive'],
+        sans: ['var(--font-helvetica)', 'system-ui', 'sans-serif'],
+      },
+      letterSpacing: {
+        'wider': '.1em',
+        'widest': '.25em',
       },
     },
   },

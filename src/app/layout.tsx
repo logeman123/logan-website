@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Cinzel_Decorative } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -22,19 +23,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${cinzelDecorative.variable}`}>
+      <body className={`${inter.className} ${cinzelDecorative.variable} pt-20`}>
         {/* Navigation */}
-        <nav className="fixed w-full z-50 py-4 px-6 bg-white/90 backdrop-blur-sm transition-colors duration-300">
+        <nav className="nav-bar">
           <div className="container mx-auto">
-            <div className="flex justify-between items-center">
-              <a href="/" className="text-xl font-light">
+            <div className="flex justify-between items-center h-20 px-8">
+              <Link href="/" className="text-xl font-light tracking-wide hover-line">
                 Logan.
-              </a>
-              <div className="flex gap-8">
-                <a href="/" className="hover:text-pink-500 transition-colors duration-300">Home</a>
-                <a href="/resume" className="hover:text-pink-500 transition-colors duration-300">Resume</a>
-                <a href="#projects" className="hover:text-pink-500 transition-colors duration-300">Project</a>
-                <a href="#contact" className="hover:text-pink-500 transition-colors duration-300">Contact</a>
+              </Link>
+              <div className="flex gap-12">
+                <Link href="/" className="hover-line text-text-primary">Home</Link>
+                <Link href="/resume" className="hover-line text-text-primary">Resume</Link>
+                <Link href="#projects" className="hover-line text-text-primary">Projects</Link>
+                <Link href="#contact" className="hover-line text-text-primary">Contact</Link>
               </div>
             </div>
           </div>

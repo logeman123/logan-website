@@ -69,7 +69,7 @@ export default function ResumePage() {
           <div className="space-y-6">
             <div>
               <div className="font-bold">Hoban Korean BBQ, Server</div>
-              <div className="italic date-text">Aug 2023 - Present</div>
+              <div className="italic date-text">Aug 2023 - April 2025</div>
               <ul className="resume-list mt-2 space-y-2">
                 <li>Main server since February 2024, competent ability in bartending</li>
                 <li>Skillful knowledge in Korean cuisine, regular attendance and covers working an average of 5 days a week</li>
