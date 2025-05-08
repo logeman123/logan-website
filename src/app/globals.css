@@ -1,26 +1,146 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --forest-green: #0a2810;
+  --gold: #c4a164;
+  --light-gold: #e6d5b8;
+  --emerald: #50c878;
+  --deep-brown: #2c1810;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--forest-green);
+  color: var(--light-gold);
+  font-family: 'Georgia', serif;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10c10 0 20 5 25 15s10 20 15 25' stroke='%23234010' fill='none' stroke-width='0.5'/%3E%3C/svg%3E");
+}
+
+.fantasy-container {
+  border: 3px double var(--gold);
+  box-shadow: 0 0 15px rgba(196, 161, 100, 0.2);
+  background: rgba(10, 40, 16, 0.9);
+}
+
+.fantasy-heading {
+  font-family: 'Cinzel Decorative', cursive;
+  color: var(--gold);
+  text-shadow: 0 0 5px rgba(196, 161, 100, 0.5);
+  position: relative;
+}
+
+.fantasy-heading::before,
+.fantasy-heading::after {
+  content: '✧';
+  color: var(--emerald);
+  position: absolute;
+  opacity: 0.6;
+}
+
+.fantasy-heading::before {
+  left: -20px;
+}
+
+.fantasy-heading::after {
+  right: -20px;
+}
+
+.fantasy-block {
+  border: 1px solid var(--gold);
+  background: rgba(44, 24, 16, 0.2);
+  box-shadow: 0 0 10px rgba(196, 161, 100, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.fantasy-block::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.fantasy-nav {
+  background: var(--deep-brown);
+  border-bottom: 2px solid var(--gold);
+  font-family: 'Cinzel Decorative', cursive;
+}
+
+.fantasy-link {
+  color: var(--gold);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.fantasy-link:hover {
+  color: var(--emerald);
+  text-shadow: 0 0 5px rgba(80, 200, 120, 0.5);
+}
+
+.fantasy-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--emerald);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.fantasy-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Magical list styling */
+ul.fantasy-list {
+  list-style: none;
+}
+
+ul.fantasy-list li::before {
+  content: '❧';
+  color: var(--emerald);
+  margin-right: 8px;
+}
+
+/* Decorative corners */
+.corner-decoration {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--gold);
+}
+
+.corner-top-left {
+  top: 5px;
+  left: 5px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.corner-top-right {
+  top: 5px;
+  right: 5px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.corner-bottom-left {
+  bottom: 5px;
+  left: 5px;
+  border-right: none;
+  border-top: none;
+}
+
+.corner-bottom-right {
+  bottom: 5px;
+  right: 5px;
+  border-left: none;
+  border-top: none;
 }

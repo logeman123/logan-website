@@ -1,103 +1,105 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="fantasy-container p-8 my-8 relative">
+      {/* Decorative corners */}
+      <div className="corner-decoration corner-top-left" />
+      <div className="corner-decoration corner-top-right" />
+      <div className="corner-decoration corner-bottom-left" />
+      <div className="corner-decoration corner-bottom-right" />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Education */}
+      <section id="education" className="fantasy-block p-6 mb-8">
+        <h2 className="fantasy-heading text-2xl mb-4">Education</h2>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center">
+          <div>
+            <div className="font-bold text-lg">Hobart and William Smith Colleges, Geneva, NY</div>
+            <div className="italic text-gold">Anticipated May 2023</div>
+          </div>
+          <div className="text-right mt-2 md:mt-0">
+            <div>Double Major, BA: Economics, International Relations <span className="font-mono text-xs">Major GPA 3.39</span></div>
+            <div>Minor: Computer Science <span className="font-mono text-xs">Overall GPA 3.18</span></div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+      {/* Honors */}
+      <section id="honors" className="fantasy-block p-6 mb-8">
+        <h2 className="fantasy-heading text-2xl mb-4">Honors</h2>
+        <ul className="fantasy-list space-y-2">
+          <li>Dean&apos;s List (2020-2022)</li>
+          <li>National Merit Scholar (2019)</li>
+        </ul>
+      </section>
+
+      {/* Experience */}
+      <section id="experience" className="fantasy-block p-6 mb-8">
+        <h2 className="fantasy-heading text-2xl mb-4">Experience</h2>
+        <div className="space-y-6">
+          <div>
+            <div className="font-bold">Anne McGilvray and Company Inc, Sales</div>
+            <div className="italic text-gold">Jun – Aug 2022</div>
+            <ul className="fantasy-list mt-2 space-y-2">
+              <li>Attended the Atlanta and Las Vegas Gift Market representing vendors of AMCI, creating connections between buyers and vendors, trained new sales reps</li>
+              <li>Personally oversaw the sale of more than $75,000 worth of wholesale gifts</li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-bold">SeaBay (Summer Sandbox), Co-Founder, Geneva, NY</div>
+            <div className="italic text-gold">May – Aug 2021</div>
+            <ul className="fantasy-list mt-2 space-y-2">
+              <li>Designed and coded front end for a functional market website to sell and trade Coral products using wordpress.org</li>
+              <li>Interviewed 120+ prospective customers, synthesized and presented information in a concise 6-minute presentation to coaches, startup accelerator teammates, and investors</li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-bold">W. P. Carey, Summer Business Analyst, New York, NY</div>
+            <div className="italic text-gold">May – Aug 2020</div>
+            <ul className="fantasy-list mt-2">
+              <li>Cancelled due to COVID</li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-bold">VSCO, Intern, San Francisco, CA</div>
+            <div className="italic text-gold">Apr – May 2019</div>
+            <ul className="fantasy-list mt-2 space-y-2">
+              <li>Conducted 50+ interviews of local high school students for market research focusing on changing trends in membership among younger demographics</li>
+              <li>Compiled extensive survey data using excel, created a detailed and engaging marketing presentation for high level executive and company employees</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Projects */}
+      <section id="projects" className="fantasy-block p-6 mb-8">
+        <h2 className="fantasy-heading text-2xl mb-4">Projects</h2>
+        <ul className="fantasy-list space-y-2">
+          <li>Organizer For HWS: International Debate Round Robin (2021)</li>
+          <li>Volunteer Building Cat Houses for St. Gabriel the Archangel Church (2019)</li>
+          <li>Volunteer Animal Humane Society as Animal Technician (2017)</li>
+        </ul>
+      </section>
+
+      {/* Activities & Skills */}
+      <section id="skills" className="fantasy-block p-6">
+        <h2 className="fantasy-heading text-2xl mb-4">Activities & Skills</h2>
+        <div className="flex flex-col md:flex-row md:justify-between gap-8">
+          <div>
+            <div className="font-bold mb-2 text-gold">Activities</div>
+            <ul className="fantasy-list space-y-2">
+              <li>Debate and Speech Club</li>
+              <li>Pre-Orientation Adventure Program (POAP)</li>
+              <li>HWS Day of Service</li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-bold mb-2 text-gold">Skills</div>
+            <ul className="fantasy-list space-y-2">
+              <li>Language: Intermediate Spanish, Basic Korean</li>
+              <li>Computer: Microsoft Office Suite, Java, Python</li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
