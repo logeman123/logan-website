@@ -5,8 +5,8 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="container mx-auto px-8 pt-32 pb-24">
-        <div className="swiss-grid">
-          <div className="col-span-12 md:col-span-7 space-y-8">
+        <div className="flex flex-row items-start justify-between gap-12 flex-wrap">
+          <div className="space-y-8 min-w-[300px] flex-1">
             <h1 className="display-large">
               Logan
               <br />
@@ -15,20 +15,22 @@ export default function Home() {
             <p className="body-large text-text-secondary tracking-wide">
               DEVELOPER<span className="mx-4">·</span>2025
             </p>
-            <Link 
+            <Link
               href="/resume"
               className="hover-line inline-block mt-8 text-lg tracking-wide"
             >
               VIEW DETAILS
             </Link>
           </div>
-          <div className="col-span-12 md:col-span-5 mt-12 md:mt-0">
-            <div className="image-container aspect-[4/5]">
-              {/* Placeholder for hero image */}
-              <div className="absolute inset-0 flex items-center justify-center text-text-secondary">
-                Image
-              </div>
-            </div>
+          <div className="flex flex-col items-center justify-center gap-4">
+            <img
+              src="/construction.gif"
+              alt="Under construction"
+              className="w-64 h-auto"
+            />
+            <p className="text-text-secondary text-sm tracking-widest uppercase">
+              Under Construction
+            </p>
           </div>
         </div>
       </section>
