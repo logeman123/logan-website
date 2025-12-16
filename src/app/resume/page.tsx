@@ -1,5 +1,4 @@
 import TransformingHeader from '@/components/resume/TransformingHeader';
-import '@/styles/resume.css';
 
 export default function ResumePage() {
   return (

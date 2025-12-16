@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import resume theme styles */
+@import '../styles/resume.css';
+
 /* Swiss design system variables */
 :root {
   --text-primary: #1a1a1a;
