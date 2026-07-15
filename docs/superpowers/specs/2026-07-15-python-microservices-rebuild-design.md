@@ -66,6 +66,7 @@ service-to-service communication:
 | Contracts | **Typed (Pydantic), in the `*_rpc` package** | See below. |
 | Packaging | **`uv` per service** | Fast, modern; fits the "modernize the repo" goal. |
 | Local dev | **`docker-compose`** | Runs all three services + asset build. |
+| Deploy (post-v1) | **EC2 + docker-compose → ECS/Fargate later** | Free `t4g.small` through 2026, 1:1 with local dev + server-ops learning; ECS/Fargate as a later cluster phase. LLM via Vercel AI Gateway. |
 
 ### Typed vs. untyped contracts (recorded rationale)
 
@@ -228,7 +229,12 @@ fake repo seeded with fixtures — no filesystem needed.
 **`LLMProvider` Protocol → `AnthropicProvider` impl (DI):** business logic depends on the
 abstraction, never the Anthropic SDK directly. Tests inject a fake provider with canned
 responses — zero API calls, deterministic. Default model **Claude Haiku 4.5** (cheap/fast),
-swappable to Sonnet 5 via config.
+swappable to Sonnet 5 via config. The provider is pointed at an LLM endpoint via injected base
+URL + key — **Vercel AI Gateway** in production (unified key, spend caps, free monthly credits)
+or the Anthropic API directly in dev; because it sits behind the abstraction, switching is config,
+not code. Build-time detail: routing Claude's tool-use loop through the gateway must use a
+tool-calling-capable interface (native Anthropic vs. OpenAI-compatible function-calling) — pinned
+when `ai` is built.
 
 **Chat flow (grounded, agentic):**
 
@@ -250,19 +256,40 @@ via tools; basic off-topic / injection guarding. `ANTHROPIC_API_KEY` via env, in
 ## Cross-cutting
 
 - **Config:** each service reads a typed Pydantic `Settings` from env (`CONTENT_URL`, `AI_URL`,
-  `SERVICE_TOKEN`, `ANTHROPIC_API_KEY`); `.env.example` documents them.
+  `SERVICE_TOKEN`, and the LLM endpoint config — `LLM_BASE_URL` + `LLM_API_KEY`, set to the Vercel
+  AI Gateway in prod or the Anthropic API in dev); `.env.example` documents them.
 - **Testing:** `pytest` per service. DI seams mean unit tests need no network/services; a thin
   set of integration tests run against `docker-compose`.
 - **Local dev:** `docker-compose up` runs all three services + rebuilds SCSS/JS. `uv` per service.
-- **Deploy:** out of scope for v1. When ready: a multi-service host (Fly.io / Render / Railway)
-  or a small VPS.
+- **Deploy:** out of scope for v1 (target = runs locally). See **Deployment plan** below for the
+  post-v1 hosting path.
+
+## Deployment plan
+
+**v1 target:** runs locally via `docker-compose up`. Deployment is a follow-on milestone.
+
+**LLM endpoint:** the `ai` service calls **Vercel AI Gateway** (unified key, spend caps, and the
+free monthly credits), pointed at Claude Haiku 4.5. This is independent of where the services are
+hosted — the gateway works from any host, and the `LLMProvider` abstraction makes it a config swap.
+
+**Hosting (post-v1):** the three services deploy to a single **EC2 instance running the same
+`docker-compose.yml`** used locally (`t4g.small`, 2 vCPU / 2 GB — free through Dec 31, 2026 via the
+T4g trial, then ~$12/mo). **Caddy** on the box provides auto-HTTPS + reverse-proxy routing to
+`web`; `content` and `ai` stay internal (same-host, `localhost`-fast). This keeps a 1:1 local→prod
+path and doubles as hands-on server-ops learning.
+
+**Later — cluster-learning phase:** migrate to **ECS/Fargate** to learn real clustering (Cloud Map
+service discovery, per-service scaling, ALB). Because RPC authenticates with bearer tokens over
+HTTP, the services are **host-agnostic** — this migration is a deploy/config change, not a rewrite.
+Progression: local compose → EC2 compose (server ops) → ECS/Fargate (clustering).
 
 ## Rollout / migration
 
 - Work happens on branch `rebuild/python-microservices`; `main` (the current Vercel site) stays
   intact until the rebuild is ready to cut over.
 - The Next.js app is replaced in this repo (git history preserved). Vercel cannot run the Python
-  services, so the deploy target changes — a later milestone.
+  services, so hosting moves to EC2 (see Deployment plan); Vercel's role narrows to providing the
+  AI Gateway. Cut over by repointing DNS once the new stack is ready.
 
 ## Content track (separate, user-owned)
 
@@ -276,5 +303,5 @@ Logan's work. The resume is untouched (see Non-goals).
 - SQLite (or Postgres per-service DB) drop-in for `content` — a future DI exercise.
 - Expose `ai`'s tool surface as a real MCP server.
 - Resume + formal experience as a future content + `content`-service track.
-- Deployment topology and cut-over from Vercel.
+- Cut-over execution (DNS repoint) and the later ECS/Fargate cluster migration.
 - Expanding the AI-facing feature set.
