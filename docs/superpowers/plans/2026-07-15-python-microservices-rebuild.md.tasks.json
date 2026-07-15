@@ -92,7 +92,7 @@
     {
       "id": 11,
       "subject": "Task 11: End-to-end smoke test (full stack, in-process)",
-      "status": "pending",
+      "status": "completed",
       "batch": "B5",
       "blockedBy": [10],
       "description": "**Goal:** Prove the whole system works together (web->content and web->ai->content) with a deterministic in-process test (no network/Docker/API key) via the injected-transport DI seam + fake LLM, plus a curl smoke script.\n\n**USER-ORDERED GATE — NON-SKIPPABLE.** Requested by the user as the v1 target (\"runs cleanly ... locally\"). Close only after every acceptance criterion has been re-validated independently, with output captured.\n\n**Verify:** uv run pytest tests/e2e -v\n\n```json:metadata\n{\"files\": [\"tests/e2e/test_stack.py\", \"scripts/smoke.sh\", \"pyproject.toml\"], \"verifyCommand\": \"uv run pytest tests/e2e -v\", \"acceptanceCriteria\": [\"home shows real content over RPC\", \"chat round-trips web->ai->content\", \"passes offline with fake LLM\", \"smoke.sh fails on non-200\"], \"userGate\": true, \"tags\": [\"user-gate\"]}\n```"

@@ -21,4 +21,4 @@ web-service = { workspace = true }
 dev = ["pytest>=8", "httpx>=0.27", "honcho>=2", "ruff>=0.6"]
 
 [tool.pytest.ini_options]
-testpaths = ["rpc/tests", "services/content/tests", "services/ai/tests", "services/web/tests"]
+testpaths = ["rpc/tests", "services/content/tests", "services/ai/tests", "services/web/tests", "tests/e2e"]
