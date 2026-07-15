@@ -68,7 +68,7 @@
     {
       "id": 8,
       "subject": "Task 8: Web config, deps & client wiring",
-      "status": "pending",
+      "status": "completed",
       "batch": "B4",
       "blockedBy": [7],
       "description": "**Goal:** Give web its typed Settings and DI providers that build ContentSource and AiSource clients (the one place concretes are named).\n\n**Verify:** uv run pytest services/web/tests/test_deps.py -v\n\n```json:metadata\n{\"files\": [\"services/web/web_service/config.py\", \"services/web/web_service/deps.py\", \"services/web/web_service/templating.py\", \"services/web/tests/test_deps.py\"], \"verifyCommand\": \"uv run pytest services/web/tests/test_deps.py -v\", \"acceptanceCriteria\": [\"settings from env\", \"clients built\", \"templates configured\"]}\n```"

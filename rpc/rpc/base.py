@@ -29,6 +29,10 @@ class ServiceClient:
         self._token_expiry = 0.0
         self._http = httpx.Client(timeout=timeout, transport=transport)
 
+    @property
+    def base_url(self):
+        return self._base_url
+
     def __enter__(self):
         return self
 
