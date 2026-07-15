@@ -50,7 +50,8 @@ body.jungle-theme .nav a:hover {
   background: rgba(10, 40, 16, 0.9);
   color: var(--light-gold);
   margin: 2rem auto;
-  max-width: 1200px;
+  width: 92%;
+  max-width: 1600px;
 }
 
 /* Resume sections */
@@ -239,14 +240,14 @@ body.jungle-theme .nav a:hover {
 }
 
 .resume-title {
-  font-size: 2.25rem;
+  font-size: 1.875rem;
   line-height: 1.2;
   margin: 0 0 1rem;
 }
 
 @media (min-width: 768px) {
   .resume-title {
-    font-size: 3rem;
+    font-size: 2.5rem;
   }
 }
 
