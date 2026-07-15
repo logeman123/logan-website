@@ -43,6 +43,13 @@ body.jungle-theme .nav a:hover {
   width: 100%;
 }
 
+/* Break out of the base layout's narrow 720px content column so the resume
+   can span the full viewport like the original site. */
+body.jungle-theme main.container {
+  max-width: none;
+  padding: 0;
+}
+
 /* Resume container */
 .resume-container {
   border: 3px double var(--gold);
@@ -240,14 +247,14 @@ body.jungle-theme .nav a:hover {
 }
 
 .resume-title {
-  font-size: 1.875rem;
+  font-size: 2rem;
   line-height: 1.2;
   margin: 0 0 1rem;
 }
 
 @media (min-width: 768px) {
   .resume-title {
-    font-size: 2.5rem;
+    font-size: 2.75rem;
   }
 }
 
