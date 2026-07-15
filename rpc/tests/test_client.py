@@ -2,7 +2,7 @@ import json
 import httpx
 import pytest
 from rpc.base import ServiceClient, static_token_provider
-from rpc.exceptions import NotFound, AuthError
+from rpc.exceptions import NotFound
 
 
 def _client(handler, token="t"):
@@ -34,5 +34,6 @@ def test_token_is_cached():
     def handler(request):
         return httpx.Response(200, json={})
     c = ServiceClient("http://svc", provider, transport=httpx.MockTransport(handler))
-    c.call("a"); c.call("b")
+    c.call("a")
+    c.call("b")
     assert calls["n"] == 1

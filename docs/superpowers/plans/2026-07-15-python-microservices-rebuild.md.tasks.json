@@ -20,7 +20,7 @@
     {
       "id": 2,
       "subject": "Task 2: Shared RPC layer (exceptions, client, server registry)",
-      "status": "pending",
+      "status": "completed",
       "batch": "B1",
       "blockedBy": [1],
       "description": "**Goal:** Implement the RPCError hierarchy, injectable ServiceClient, and server-side ToolRegistry + FastAPI router, unit-tested with a fake httpx transport.\n\n**Verify:** uv run pytest rpc/tests -v\n\n```json:metadata\n{\"files\": [\"rpc/rpc/exceptions.py\", \"rpc/rpc/base.py\", \"rpc/rpc/server.py\", \"rpc/tests/test_client.py\", \"rpc/tests/test_server.py\"], \"verifyCommand\": \"uv run pytest rpc/tests -v\", \"acceptanceCriteria\": [\"client sends bearer + returns json, sugar works\", \"status maps to RPCError subclass\", \"token cached\", \"registry validates + dispatches; unknown->404 bad->400\", \"router enforces 401\"]}\n```"
