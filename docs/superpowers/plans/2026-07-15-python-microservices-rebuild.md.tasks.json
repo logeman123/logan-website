@@ -36,7 +36,7 @@
     {
       "id": 4,
       "subject": "Task 4: Content service app + typed client",
-      "status": "pending",
+      "status": "completed",
       "batch": "B2",
       "blockedBy": [3],
       "description": "**Goal:** Wire the repository into a FastAPI app exposing list_projects/get_project over /rpc/, and add the typed ContentRpcClient (ContentSource Protocol).\n\n**Verify:** uv run pytest services/content/tests/test_app.py rpc/tests/test_content_client.py -v\n\n```json:metadata\n{\"files\": [\"services/content/content_service/config.py\", \"services/content/content_service/tools.py\", \"services/content/content_service/deps.py\", \"services/content/content_service/main.py\", \"rpc/rpc/content_rpc/client.py\", \"services/content/tests/test_app.py\", \"rpc/tests/test_content_client.py\"], \"verifyCommand\": \"uv run pytest services/content/tests/test_app.py rpc/tests/test_content_client.py -v\", \"acceptanceCriteria\": [\"get_project ok/404/401\", \"health ok\", \"typed client parses + satisfies ContentSource\"]}\n```"
