@@ -1,0 +1,101 @@
+{
+  "planPath": "docs/superpowers/plans/2026-07-15-python-microservices-rebuild.md",
+  "lastUpdated": "2026-07-15",
+  "batches": [
+    { "id": "B1", "title": "Foundation (scaffold + shared RPC)", "tasks": [1, 2], "commitMessage": "scaffold python monorepo and shared rpc layer" },
+    { "id": "B2", "title": "Content service", "tasks": [3, 4], "commitMessage": "add content service with file-backed repo and typed rpc client" },
+    { "id": "B3", "title": "AI service", "tasks": [5, 6, 7], "commitMessage": "add ai chat service with claude provider behind di" },
+    { "id": "B4", "title": "Web BFF", "tasks": [8, 9], "commitMessage": "add web bff with htmx pages and graceful degradation" },
+    { "id": "B5", "title": "Integration & local dev", "tasks": [10, 11], "commitMessage": "add docker setup and end-to-end smoke test" }
+  ],
+  "commitPolicy": "Logan commits at batch boundaries; executor never runs git commit and never stages docs/.",
+  "tasks": [
+    {
+      "id": 1,
+      "subject": "Task 1: Repo scaffold & tooling",
+      "status": "completed",
+      "batch": "B1",
+      "description": "**Goal:** Replace the Next.js scaffold with a uv workspace whose three service packages and shared rpc package install and run under Python 3.12.\n\n**Verify:** uv sync && uv run python -c \"import rpc, content_service, ai_service, web_service; print('ok')\"\n\n```json:metadata\n{\"files\": [\"pyproject.toml\", \".python-version\", \"Procfile.dev\", \".env.example\", \"rpc/pyproject.toml\", \"services/content/pyproject.toml\", \"services/ai/pyproject.toml\", \"services/web/pyproject.toml\", \".gitignore\", \"README.md\"], \"verifyCommand\": \"uv sync && uv run python -c \\\"import rpc, content_service, ai_service, web_service; print('ok')\\\"\", \"acceptanceCriteria\": [\"uv sync resolves workspace on 3.12\", \"all four packages import\", \"python artifacts gitignored\", \"Next.js files removed\"]}\n```"
+    },
+    {
+      "id": 2,
+      "subject": "Task 2: Shared RPC layer (exceptions, client, server registry)",
+      "status": "pending",
+      "batch": "B1",
+      "blockedBy": [1],
+      "description": "**Goal:** Implement the RPCError hierarchy, injectable ServiceClient, and server-side ToolRegistry + FastAPI router, unit-tested with a fake httpx transport.\n\n**Verify:** uv run pytest rpc/tests -v\n\n```json:metadata\n{\"files\": [\"rpc/rpc/exceptions.py\", \"rpc/rpc/base.py\", \"rpc/rpc/server.py\", \"rpc/tests/test_client.py\", \"rpc/tests/test_server.py\"], \"verifyCommand\": \"uv run pytest rpc/tests -v\", \"acceptanceCriteria\": [\"client sends bearer + returns json, sugar works\", \"status maps to RPCError subclass\", \"token cached\", \"registry validates + dispatches; unknown->404 bad->400\", \"router enforces 401\"]}\n```"
+    },
+    {
+      "id": 3,
+      "subject": "Task 3: Content contracts + repository + sample data",
+      "status": "pending",
+      "batch": "B2",
+      "blockedBy": [2],
+      "description": "**Goal:** Define content wire contracts in content_rpc and a ContentRepository Protocol (file-backed + in-memory), plus seed one real project (this website).\n\n**Verify:** uv run pytest services/content/tests/test_repository.py -v\n\n```json:metadata\n{\"files\": [\"rpc/rpc/content_rpc/contracts.py\", \"services/content/content_service/repository.py\", \"services/content/content_service/data/projects/this-website.md\", \"services/content/content_service/data/projects/_placeholder.md\", \"services/content/tests/test_repository.py\"], \"verifyCommand\": \"uv run pytest services/content/tests/test_repository.py -v\", \"acceptanceCriteria\": [\"contracts defined\", \"file repo renders body_html\", \"featured filter + NotFound\", \"in-memory repo matches\"]}\n```"
+    },
+    {
+      "id": 4,
+      "subject": "Task 4: Content service app + typed client",
+      "status": "pending",
+      "batch": "B2",
+      "blockedBy": [3],
+      "description": "**Goal:** Wire the repository into a FastAPI app exposing list_projects/get_project over /rpc/, and add the typed ContentRpcClient (ContentSource Protocol).\n\n**Verify:** uv run pytest services/content/tests/test_app.py rpc/tests/test_content_client.py -v\n\n```json:metadata\n{\"files\": [\"services/content/content_service/config.py\", \"services/content/content_service/tools.py\", \"services/content/content_service/deps.py\", \"services/content/content_service/main.py\", \"rpc/rpc/content_rpc/client.py\", \"services/content/tests/test_app.py\", \"rpc/tests/test_content_client.py\"], \"verifyCommand\": \"uv run pytest services/content/tests/test_app.py rpc/tests/test_content_client.py -v\", \"acceptanceCriteria\": [\"get_project ok/404/401\", \"health ok\", \"typed client parses + satisfies ContentSource\"]}\n```"
+    },
+    {
+      "id": 5,
+      "subject": "Task 5: AI LLM provider abstraction",
+      "status": "pending",
+      "batch": "B3",
+      "blockedBy": [4],
+      "description": "**Goal:** Define LLMProvider Protocol + AnthropicProvider (base_url-pointable) + deterministic FakeLLMProvider, plus LLMTurn/ToolUse types.\n\n**Verify:** uv run pytest services/ai/tests/test_llm.py -v\n\n```json:metadata\n{\"files\": [\"services/ai/ai_service/llm.py\", \"services/ai/tests/test_llm.py\"], \"verifyCommand\": \"uv run pytest services/ai/tests/test_llm.py -v\", \"acceptanceCriteria\": [\"LLMTurn shape\", \"fake scripted+repeats\", \"anthropic maps blocks\"]}\n```"
+    },
+    {
+      "id": 6,
+      "subject": "Task 6: AI chat orchestration + content-backed tools",
+      "status": "pending",
+      "batch": "B3",
+      "blockedBy": [5],
+      "description": "**Goal:** Implement the agentic tool-use loop (Chat.reply) and content-backed tool executor, depending only on LLMProvider + ContentSource abstractions.\n\n**Verify:** uv run pytest services/ai/tests/test_chat.py -v\n\n```json:metadata\n{\"files\": [\"services/ai/ai_service/tools.py\", \"services/ai/ai_service/chat.py\", \"services/ai/tests/test_chat.py\"], \"verifyCommand\": \"uv run pytest services/ai/tests/test_chat.py -v\", \"acceptanceCriteria\": [\"tool specs\", \"execute_tool grounds + survives errors\", \"loop tool_use/end_turn/max_steps\"]}\n```"
+    },
+    {
+      "id": 7,
+      "subject": "Task 7: AI service app + typed client",
+      "status": "pending",
+      "batch": "B3",
+      "blockedBy": [6],
+      "description": "**Goal:** Expose Chat as a chat RPC tool, wire config + DI (fake default, Anthropic when configured), add typed AiRpcClient.\n\n**Verify:** uv run pytest services/ai/tests/test_app.py rpc/tests/test_ai_client.py -v\n\n```json:metadata\n{\"files\": [\"services/ai/ai_service/config.py\", \"services/ai/ai_service/rpc_tools.py\", \"services/ai/ai_service/deps.py\", \"services/ai/ai_service/main.py\", \"rpc/rpc/ai_rpc/contracts.py\", \"rpc/rpc/ai_rpc/client.py\", \"services/ai/tests/test_app.py\", \"rpc/tests/test_ai_client.py\"], \"verifyCommand\": \"uv run pytest services/ai/tests/test_app.py rpc/tests/test_ai_client.py -v\", \"acceptanceCriteria\": [\"chat tool returns reply; health ok\", \"fake provider default no key\", \"AiRpcClient.chat returns ChatOut\"]}\n```"
+    },
+    {
+      "id": 8,
+      "subject": "Task 8: Web config, deps & client wiring",
+      "status": "pending",
+      "batch": "B4",
+      "blockedBy": [7],
+      "description": "**Goal:** Give web its typed Settings and DI providers that build ContentSource and AiSource clients (the one place concretes are named).\n\n**Verify:** uv run pytest services/web/tests/test_deps.py -v\n\n```json:metadata\n{\"files\": [\"services/web/web_service/config.py\", \"services/web/web_service/deps.py\", \"services/web/web_service/templating.py\", \"services/web/tests/test_deps.py\"], \"verifyCommand\": \"uv run pytest services/web/tests/test_deps.py -v\", \"acceptanceCriteria\": [\"settings from env\", \"clients built\", \"templates configured\"]}\n```"
+    },
+    {
+      "id": 9,
+      "subject": "Task 9: Web routes, templates, HTMX & static assets",
+      "status": "pending",
+      "batch": "B4",
+      "blockedBy": [8],
+      "description": "**Goal:** Build /, /work, /work/{slug}, /chat with Jinja templates, an HTMX chat partial, vendored HTMX/Alpine, base CSS, and graceful degradation on backend RPC failure.\n\n**Verify:** uv run pytest services/web/tests/test_routes.py -v\n\n```json:metadata\n{\"files\": [\"services/web/web_service/routes/home.py\", \"services/web/web_service/routes/work.py\", \"services/web/web_service/routes/chat.py\", \"services/web/web_service/main.py\", \"services/web/web_service/templates/base.html\", \"services/web/web_service/templates/index.html\", \"services/web/web_service/templates/work_list.html\", \"services/web/web_service/templates/work_detail.html\", \"services/web/web_service/templates/chat.html\", \"services/web/web_service/templates/_chat_reply.html\", \"services/web/web_service/static/styles.css\", \"services/web/tests/test_routes.py\"], \"verifyCommand\": \"uv run pytest services/web/tests/test_routes.py -v\", \"acceptanceCriteria\": [\"home/work/detail render; missing->404\", \"chat partial returns reply\", \"graceful degradation no 500\"]}\n```"
+    },
+    {
+      "id": 10,
+      "subject": "Task 10: Dockerfiles + docker-compose (additive)",
+      "status": "pending",
+      "batch": "B5",
+      "blockedBy": [9],
+      "description": "**Goal:** Provide a container path running all three services with one command, mirroring the honcho loop. Docker-gated; app already runs without Docker via honcho.\n\n**Verify:** docker compose config >/dev/null && echo OK (skip with a note if Docker not installed)\n\n```json:metadata\n{\"files\": [\"services/content/Dockerfile\", \"services/ai/Dockerfile\", \"services/web/Dockerfile\", \"docker-compose.yml\", \".dockerignore\"], \"verifyCommand\": \"docker compose config >/dev/null && echo OK\", \"acceptanceCriteria\": [\"dockerfiles build with uv\", \"compose defines 3 services + healthchecks\", \"compose config validates (docker-gated)\"]}\n```"
+    },
+    {
+      "id": 11,
+      "subject": "Task 11: End-to-end smoke test (full stack, in-process)",
+      "status": "pending",
+      "batch": "B5",
+      "blockedBy": [10],
+      "description": "**Goal:** Prove the whole system works together (web->content and web->ai->content) with a deterministic in-process test (no network/Docker/API key) via the injected-transport DI seam + fake LLM, plus a curl smoke script.\n\n**USER-ORDERED GATE — NON-SKIPPABLE.** Requested by the user as the v1 target (\"runs cleanly ... locally\"). Close only after every acceptance criterion has been re-validated independently, with output captured.\n\n**Verify:** uv run pytest tests/e2e -v\n\n```json:metadata\n{\"files\": [\"tests/e2e/test_stack.py\", \"scripts/smoke.sh\", \"pyproject.toml\"], \"verifyCommand\": \"uv run pytest tests/e2e -v\", \"acceptanceCriteria\": [\"home shows real content over RPC\", \"chat round-trips web->ai->content\", \"passes offline with fake LLM\", \"smoke.sh fails on non-200\"], \"userGate\": true, \"tags\": [\"user-gate\"]}\n```"
+    }
+  ]
+}
