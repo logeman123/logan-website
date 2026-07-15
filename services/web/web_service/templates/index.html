@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="hero">
+    <h1>Backend developer</h1>
+    <p>Python · microservices · HTMX</p>
+  </section>
+  <section>
+    <h2>Featured work</h2>
+    {% if error %}<p class="notice">{{ error }}</p>{% endif %}
+    <ul class="cards">
+      {% for p in featured %}
+        <li><a href="/work/{{ p.slug }}"><strong>{{ p.title }}</strong>
+          {% if p.year %}<span class="year">{{ p.year }}</span>{% endif %}</a></li>
+      {% else %}
+        {% if not error %}<li>Nothing featured yet.</li>{% endif %}
+      {% endfor %}
+    </ul>
+  </section>
+{% endblock %}

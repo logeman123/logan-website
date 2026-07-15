@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Work — Logan Schwappach{% endblock %}
+{% block content %}
+  <h1>Work</h1>
+  {% if error %}<p class="notice">{{ error }}</p>{% endif %}
+  <ul class="cards">
+    {% for p in projects %}
+      <li><a href="/work/{{ p.slug }}"><strong>{{ p.title }}</strong> — {{ p.blurb }}</a></li>
+    {% else %}
+      {% if not error %}<li>No projects yet.</li>{% endif %}
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ project.title if project else "Not found" }}{% endblock %}
+{% block content %}
+  {% if project %}
+    <article>
+      <h1>{{ project.title }}</h1>
+      <p class="meta">{{ project.role }}{% if project.tech %} · {{ project.tech | join(", ") }}{% endif %}</p>
+      {% if project.highlights %}<ul>{% for h in project.highlights %}<li>{{ h }}</li>{% endfor %}</ul>{% endif %}
+      <div class="body">{{ project.body_html | safe }}</div>
+    </article>
+  {% else %}
+    <p class="notice">{{ error or "That project could not be found." }}</p>
+    <p><a href="/work">← Back to work</a></p>
+  {% endif %}
+{% endblock %}

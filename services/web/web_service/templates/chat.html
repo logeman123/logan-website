@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Chat — Logan Schwappach{% endblock %}
+{% block content %}
+  <h1>Ask about my work</h1>
+  <div id="chat-log" class="chat-log"></div>
+  <form hx-post="/chat" hx-target="#chat-log" hx-swap="beforeend" hx-on::after-request="this.reset()">
+    <input name="message" placeholder="Ask me about Logan's projects…" autocomplete="off" required>
+    <button type="submit">Send</button>
+  </form>
+{% endblock %}

@@ -76,7 +76,7 @@
     {
       "id": 9,
       "subject": "Task 9: Web routes, templates, HTMX & static assets",
-      "status": "pending",
+      "status": "completed",
       "batch": "B4",
       "blockedBy": [8],
       "description": "**Goal:** Build /, /work, /work/{slug}, /chat with Jinja templates, an HTMX chat partial, vendored HTMX/Alpine, base CSS, and graceful degradation on backend RPC failure.\n\n**Verify:** uv run pytest services/web/tests/test_routes.py -v\n\n```json:metadata\n{\"files\": [\"services/web/web_service/routes/home.py\", \"services/web/web_service/routes/work.py\", \"services/web/web_service/routes/chat.py\", \"services/web/web_service/main.py\", \"services/web/web_service/templates/base.html\", \"services/web/web_service/templates/index.html\", \"services/web/web_service/templates/work_list.html\", \"services/web/web_service/templates/work_detail.html\", \"services/web/web_service/templates/chat.html\", \"services/web/web_service/templates/_chat_reply.html\", \"services/web/web_service/static/styles.css\", \"services/web/tests/test_routes.py\"], \"verifyCommand\": \"uv run pytest services/web/tests/test_routes.py -v\", \"acceptanceCriteria\": [\"home/work/detail render; missing->404\", \"chat partial returns reply\", \"graceful degradation no 500\"]}\n```"
