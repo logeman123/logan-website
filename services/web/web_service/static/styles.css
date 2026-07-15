@@ -19,3 +19,8 @@ body { margin:0; font:16px/1.6 system-ui,sans-serif; color:var(--fg); background
 form { display:flex; gap:.5rem; }
 input[name=message] { flex:1; padding:.6rem .8rem; border:1px solid #ccc; border-radius:8px; }
 button { padding:.6rem 1rem; border:0; background:var(--accent); color:#fff; border-radius:8px; cursor:pointer; }
+.under-construction { text-align:center; padding-top:2rem; }
+.under-construction h1 { font-size:clamp(2rem,6vw,3.5rem); font-weight:300; letter-spacing:-0.02em; margin:0 0 .25rem; }
+.under-construction .tagline { color:var(--muted); }
+.under-construction img { display:block; margin:2rem auto .75rem; max-width:216px; height:auto; }
+.uc-label { letter-spacing:.15em; text-transform:uppercase; color:var(--muted); font-size:.9rem; }

@@ -1,19 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-  <section class="hero">
-    <h1>Backend developer</h1>
-    <p>Python · microservices · HTMX</p>
-  </section>
-  <section>
-    <h2>Featured work</h2>
-    {% if error %}<p class="notice">{{ error }}</p>{% endif %}
-    <ul class="cards">
-      {% for p in featured %}
-        <li><a href="/work/{{ p.slug }}"><strong>{{ p.title }}</strong>
-          {% if p.year %}<span class="year">{{ p.year }}</span>{% endif %}</a></li>
-      {% else %}
-        {% if not error %}<li>Nothing featured yet.</li>{% endif %}
-      {% endfor %}
-    </ul>
+  <section class="under-construction">
+    <h1>Logan Schwappach</h1>
+    <p class="tagline">Backend developer</p>
+    <img src="/static/construction.gif" alt="Under construction" width="216" height="216">
+    <p class="uc-label">Under Construction</p>
   </section>
 {% endblock %}

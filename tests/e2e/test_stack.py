@@ -80,8 +80,9 @@ def teardown_module():
     web_app.dependency_overrides.clear()
 
 
-def test_home_shows_real_content():
-    r = _web().get("/")
+def test_work_shows_real_content():
+    # /work renders projects fetched from the real content app over the RPC bridge
+    r = _web().get("/work")
     assert r.status_code == 200 and "This Website" in r.text
 
 

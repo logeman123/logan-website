@@ -45,9 +45,12 @@ def teardown_function():
     app.dependency_overrides.clear()
 
 
-def test_home_lists_featured():
+def test_home_under_construction():
     r = _client().get("/")
-    assert r.status_code == 200 and "This Website" in r.text
+    assert r.status_code == 200
+    assert "Logan Schwappach" in r.text
+    assert "Under Construction" in r.text
+    assert "/static/construction.gif" in r.text
 
 
 def test_work_detail():
@@ -62,11 +65,6 @@ def test_work_missing_404():
 def test_chat_partial():
     r = _client().post("/chat", data={"message": "hi"})
     assert r.status_code == 200 and "you said hi" in r.text
-
-
-def test_home_degrades_gracefully():
-    r = _client(content=BrokenContent()).get("/")
-    assert r.status_code == 200 and "unavailable" in r.text.lower()
 
 
 def test_work_list_degrades():
