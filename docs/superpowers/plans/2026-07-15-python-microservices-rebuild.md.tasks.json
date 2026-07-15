@@ -28,7 +28,7 @@
     {
       "id": 3,
       "subject": "Task 3: Content contracts + repository + sample data",
-      "status": "pending",
+      "status": "completed",
       "batch": "B2",
       "blockedBy": [2],
       "description": "**Goal:** Define content wire contracts in content_rpc and a ContentRepository Protocol (file-backed + in-memory), plus seed one real project (this website).\n\n**Verify:** uv run pytest services/content/tests/test_repository.py -v\n\n```json:metadata\n{\"files\": [\"rpc/rpc/content_rpc/contracts.py\", \"services/content/content_service/repository.py\", \"services/content/content_service/data/projects/this-website.md\", \"services/content/content_service/data/projects/_placeholder.md\", \"services/content/tests/test_repository.py\"], \"verifyCommand\": \"uv run pytest services/content/tests/test_repository.py -v\", \"acceptanceCriteria\": [\"contracts defined\", \"file repo renders body_html\", \"featured filter + NotFound\", \"in-memory repo matches\"]}\n```"
