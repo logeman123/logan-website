@@ -2,7 +2,7 @@ import json
 import httpx
 import pytest
 from rpc.base import ServiceClient, static_token_provider
-from rpc.exceptions import NotFound
+from rpc.exceptions import NotFound, ServiceError
 
 
 def _client(handler, token="t"):
@@ -24,6 +24,13 @@ def test_error_status_maps_to_exception():
         return httpx.Response(404, text="nope")
     with pytest.raises(NotFound):
         _client(handler).get_project(slug="missing")
+
+
+def test_connect_error_maps_to_service_error():
+    def handler(request):
+        raise httpx.ConnectError("boom")
+    with pytest.raises(ServiceError):
+        _client(handler).call("x")
 
 
 def test_token_is_cached():

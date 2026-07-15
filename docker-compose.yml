@@ -1,0 +1,35 @@
+services:
+  content:
+    build: { context: ., dockerfile: services/content/Dockerfile }
+    environment: { SERVICE_TOKEN: dev-token }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8001/health').status==200 else sys.exit(1)"]
+      interval: 5s
+      retries: 5
+  ai:
+    build: { context: ., dockerfile: services/ai/Dockerfile }
+    environment:
+      SERVICE_TOKEN: dev-token
+      CONTENT_URL: http://content:8001
+      LLM_PROVIDER: ${LLM_PROVIDER:-fake}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8002/health').status==200 else sys.exit(1)"]
+      interval: 5s
+      retries: 5
+    depends_on: { content: { condition: service_healthy } }
+  web:
+    build: { context: ., dockerfile: services/web/Dockerfile }
+    environment:
+      SERVICE_TOKEN: dev-token
+      CONTENT_URL: http://content:8001
+      AI_URL: http://ai:8002
+    ports: ["8000:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8000/health').status==200 else sys.exit(1)"]
+      interval: 5s
+      retries: 5
+    depends_on:
+      content: { condition: service_healthy }
+      ai: { condition: service_healthy }

@@ -84,7 +84,7 @@
     {
       "id": 10,
       "subject": "Task 10: Dockerfiles + docker-compose (additive)",
-      "status": "pending",
+      "status": "completed",
       "batch": "B5",
       "blockedBy": [9],
       "description": "**Goal:** Provide a container path running all three services with one command, mirroring the honcho loop. Docker-gated; app already runs without Docker via honcho.\n\n**Verify:** docker compose config >/dev/null && echo OK (skip with a note if Docker not installed)\n\n```json:metadata\n{\"files\": [\"services/content/Dockerfile\", \"services/ai/Dockerfile\", \"services/web/Dockerfile\", \"docker-compose.yml\", \".dockerignore\"], \"verifyCommand\": \"docker compose config >/dev/null && echo OK\", \"acceptanceCriteria\": [\"dockerfiles build with uv\", \"compose defines 3 services + healthchecks\", \"compose config validates (docker-gated)\"]}\n```"

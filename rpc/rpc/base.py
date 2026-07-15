@@ -2,7 +2,7 @@ import time
 
 import httpx
 
-from rpc.exceptions import AuthError, RPCError, error_for_status
+from rpc.exceptions import AuthError, RPCError, ServiceError, error_for_status
 
 DEFAULT_TIMEOUT = 30.0
 DEFAULT_TOKEN_MARGIN = 60.0
@@ -59,7 +59,10 @@ class ServiceClient:
         return {"Authorization": f"Bearer {self._token()}"}
 
     def _send(self, method, path, **kwargs):
-        resp = self._http.request(method, f"{self._base_url}{path}", headers=self._headers(), **kwargs)
+        try:
+            resp = self._http.request(method, f"{self._base_url}{path}", headers=self._headers(), **kwargs)
+        except httpx.RequestError as exc:
+            raise ServiceError(f"request to {path} failed: {exc}") from exc
         if resp.is_success:
             return resp.json()
         raise error_for_status(resp.status_code, resp.text)
