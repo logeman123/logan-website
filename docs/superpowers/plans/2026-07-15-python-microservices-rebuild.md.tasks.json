@@ -60,7 +60,7 @@
     {
       "id": 7,
       "subject": "Task 7: AI service app + typed client",
-      "status": "pending",
+      "status": "completed",
       "batch": "B3",
       "blockedBy": [6],
       "description": "**Goal:** Expose Chat as a chat RPC tool, wire config + DI (fake default, Anthropic when configured), add typed AiRpcClient.\n\n**Verify:** uv run pytest services/ai/tests/test_app.py rpc/tests/test_ai_client.py -v\n\n```json:metadata\n{\"files\": [\"services/ai/ai_service/config.py\", \"services/ai/ai_service/rpc_tools.py\", \"services/ai/ai_service/deps.py\", \"services/ai/ai_service/main.py\", \"rpc/rpc/ai_rpc/contracts.py\", \"rpc/rpc/ai_rpc/client.py\", \"services/ai/tests/test_app.py\", \"rpc/tests/test_ai_client.py\"], \"verifyCommand\": \"uv run pytest services/ai/tests/test_app.py rpc/tests/test_ai_client.py -v\", \"acceptanceCriteria\": [\"chat tool returns reply; health ok\", \"fake provider default no key\", \"AiRpcClient.chat returns ChatOut\"]}\n```"
