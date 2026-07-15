@@ -44,7 +44,7 @@
     {
       "id": 5,
       "subject": "Task 5: AI LLM provider abstraction",
-      "status": "pending",
+      "status": "completed",
       "batch": "B3",
       "blockedBy": [4],
       "description": "**Goal:** Define LLMProvider Protocol + AnthropicProvider (base_url-pointable) + deterministic FakeLLMProvider, plus LLMTurn/ToolUse types.\n\n**Verify:** uv run pytest services/ai/tests/test_llm.py -v\n\n```json:metadata\n{\"files\": [\"services/ai/ai_service/llm.py\", \"services/ai/tests/test_llm.py\"], \"verifyCommand\": \"uv run pytest services/ai/tests/test_llm.py -v\", \"acceptanceCriteria\": [\"LLMTurn shape\", \"fake scripted+repeats\", \"anthropic maps blocks\"]}\n```"
