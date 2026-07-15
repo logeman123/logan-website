@@ -1,19 +1,59 @@
+{#
+  base.html — the ONE layout every page in the web (BFF) service inherits from.
+
+  Where this fits in the system:
+    The web service is a Backend-For-Frontend. It owns no data of its own; it
+    orchestrates the content and ai microservices over HTTP+JSON RPC and renders
+    the results server-side with Jinja2. Every route's template (index, work,
+    chat, resume) does `{% extends "base.html" %}` and then only fills in the
+    holes this file leaves open. That is Jinja template inheritance: the parent
+    defines the page skeleton once, children override named `{% block %}`s.
+
+  The blocks this skeleton exposes to children (search for `{% block %}` below):
+    - title       : the <title> text (defaults to "Logan Schwappach").
+    - head        : extra <head> content — a child can inject a page-specific
+                    stylesheet or web font here (resume.html uses it to pull in
+                    resume.css and the Cinzel Decorative font).
+    - body_class  : a CSS class placed on <body>. This is how per-route theming
+                    works — resume.html sets it to "jungle-theme", which unlocks
+                    the `body.jungle-theme ...` rules in resume.css. Empty here,
+                    so ordinary pages get the plain default theme.
+    - content     : the actual page body. Every child MUST fill this.
+
+  Note the shared chrome (nav header + <main class="container">) lives here so it
+  is identical on every page and defined in exactly one place.
+#}
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  {# Responsive viewport: makes the layout scale correctly on phones/tablets. #}
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {# `title` block: children override the tab/window title; else this default. #}
   <title>{% block title %}Logan Schwappach{% endblock %}</title>
+  {# Site-wide stylesheet, loaded on every page. #}
   <link rel="stylesheet" href="/static/styles.css">
+  {# `head` block: empty by default. A child page injects page-specific <head>
+     tags here (extra stylesheets, fonts, meta) WITHOUT duplicating the skeleton.
+     resume.html uses this to add resume.css + the Cinzel Decorative Google font. #}
   {% block head %}{% endblock %}
+  {# HTMX and Alpine are served locally from /static (no external CDN), and both
+     use `defer` so they execute after the HTML parses.
+     - HTMX powers the chat page: form attributes like hx-post/hx-target/hx-swap
+       let the browser POST and swap in HTML fragments without a full page reload.
+     - Alpine powers the resume's hieroglyph->English header reveal (x-data etc.). #}
   <script src="/static/htmx.min.js" defer></script>
   <script src="/static/alpine.min.js" defer></script>
 </head>
+{# `body_class` block: the per-route theming seam. Blank -> default theme.
+   resume.html overrides it with "jungle-theme" to activate its themed CSS. #}
 <body class="{% block body_class %}{% endblock %}">
+  {# Shared top navigation, identical on every page because it lives in the base. #}
   <header class="nav">
     <a href="/" class="brand">Logan Schwappach</a>
     <nav><a href="/work">Work</a> <a href="/chat">Chat</a> <a href="/resume">Resume</a></nav>
   </header>
+  {# `content` block: the hole each child page fills with its unique body. #}
   <main class="container">{% block content %}{% endblock %}</main>
 </body>
 </html>

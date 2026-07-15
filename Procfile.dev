@@ -1,3 +1,24 @@
+# =============================================================================
+# Procfile.dev  (Docker-free local dev — run all services with one command)
+# =============================================================================
+# A Procfile lists named processes as "name: command". Run them together with
+# honcho (the Python foreman clone, in the dev dependency group), e.g.:
+#     honcho -f Procfile.dev start
+# honcho launches all three uvicorn servers as local processes, prefixes and
+# interleaves their logs, and shuts them all down together on Ctrl-C. This is
+# the lightweight alternative to docker-compose for day-to-day development.
+#
+# Notes vs. docker-compose:
+#   - Ports match the compose setup (content 8001, ai 8002, web 8000) so the
+#     default localhost URLs in .env.example just work.
+#   - `--reload` makes uvicorn hot-restart on source edits (dev only; never in
+#     the containers, whose CMD omits it).
+#   - No SERVICE_TOKEN/CONTENT_URL/etc. are set here; they come from your `.env`
+#     (or the pydantic-settings defaults), unlike compose which sets them inline.
+
+# content service: owns project data, listens on 8001.
 content: uv run uvicorn content_service.main:app --port 8001 --reload
+# ai service: chat + tool-use loop (calls content), listens on 8002.
 ai: uv run uvicorn ai_service.main:app --port 8002 --reload
+# web BFF: orchestrates content + ai, serves the site on 8000.
 web: uv run uvicorn web_service.main:app --port 8000 --reload

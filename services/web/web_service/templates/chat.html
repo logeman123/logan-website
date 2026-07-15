@@ -1,9 +1,47 @@
+{#
+  chat.html — the full "/chat" page shell (loaded on a normal GET /chat).
+
+  This is the HTMX host page. It renders the outer chrome ONCE: the heading, an
+  empty conversation log, and the message form. From then on the page never does
+  a full reload — HTMX posts each message and splices the server's HTML reply
+  into the log. The bare fragment returned per message is _chat_reply.html.
+
+  What happens end-to-end when a visitor sends a message:
+    1. HTMX intercepts the form submit and POSTs `message` to /chat.
+    2. The web service's /chat route calls the ai service's `chat` RPC tool.
+    3. The ai service runs an agentic tool-use loop: Claude may call back into
+       the content service's get_project/list_projects RPC tools to ground its
+       answer, then returns the final text. (If the ai hop fails, the route
+       degrades gracefully and still returns a reply fragment — never a 500.)
+    4. The web service renders _chat_reply.html (just the two message bubbles)
+       and returns that HTML fragment.
+    5. HTMX appends the fragment into #chat-log (see hx-swap below).
+#}
 {% extends "base.html" %}
 {% block title %}Chat — Logan Schwappach{% endblock %}
 {% block content %}
   <h1>Ask about my work</h1>
+  {# The running transcript. Starts empty; HTMX appends reply fragments here. #}
   <div id="chat-log" class="chat-log"></div>
+  {#
+    The HTMX-powered form. The attributes below are what make this a live chat
+    with zero custom JavaScript:
+      - hx-post="/chat"      : submit issues an AJAX POST to /chat (not a full
+                               navigation), sending the `message` field.
+      - hx-target="#chat-log": the server's HTML response is aimed at this element.
+      - hx-swap="beforeend"  : APPEND the response inside #chat-log (as its last
+                               child) rather than replacing it — so each new
+                               exchange stacks under the previous ones, building
+                               a transcript. (Contrast "innerHTML", which would
+                               wipe the log each time.)
+      - hx-on::after-request="this.reset()" : after the request completes, clear
+                               the input so it's ready for the next message.
+    Because hx-swap appends a fragment, the /chat route returns ONLY the two
+    message bubbles (_chat_reply.html), never a whole base.html page.
+  #}
   <form hx-post="/chat" hx-target="#chat-log" hx-swap="beforeend" hx-on::after-request="this.reset()">
+    {# `required` blocks empty submits client-side; autocomplete off keeps the
+       browser from suggesting prior questions over the placeholder. #}
     <input name="message" placeholder="Ask me about Logan's projects…" autocomplete="off" required>
     <button type="submit">Send</button>
   </form>

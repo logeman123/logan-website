@@ -1,11 +1,58 @@
+{#
+  resume.html — a standalone, hand-built "jungle"-themed résumé page ("/resume").
+
+  How it differs from the rest of the site:
+    - It is entirely static content (no content/ai RPC calls) — the résumé data
+      is hand-authored right here in the markup.
+    - It opts into a completely different look by setting the `body_class` block
+      to "jungle-theme" (see base.html) and pulling in its own stylesheet
+      (resume.css) plus a decorative Google font via the `head` block.
+    - It visually breaks out of base.html's narrow 720px `.container` column so
+      the résumé can span the full viewport (resume.css re-widens .container for
+      jungle-theme). See the resume.css comment on that override.
+    - Its section headers use Alpine.js to animate from Egyptian hieroglyphs into
+      English on hover (the TransformingHeader macro below).
+  This shows how one shared base layout can host a page with a totally bespoke
+  theme purely through the body_class + head blocks — no changes to base.html.
+#}
 {% extends "base.html" %}
+{# Activate the jungle theme: this class on <body> unlocks all the
+   `body.jungle-theme ...` rules in resume.css. #}
 {% block body_class %}jungle-theme{% endblock %}
 {% block head %}
+  {# Page-specific stylesheet, layered on top of the site-wide styles.css. #}
   <link rel="stylesheet" href="/static/resume.css">
+  {# preconnect warms up the TLS/DNS to the font host before the font request. #}
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  {# Cinzel Decorative: the ornate display font used for the themed headers/nav. #}
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
 {% endblock %}
 
+{#
+  theader() — a Jinja macro (a reusable template function). Called once per
+  section below as `{{ theader('Education', '𓂧𓅲...') }}` so the same
+  hieroglyph->English "reveal" header markup isn't copy-pasted seven times.
+
+  Parameters:
+    - english : the human-readable section name shown after the reveal.
+    - glyphs  : the Egyptian-hieroglyph placeholder shown before hover.
+
+  The interactivity is Alpine.js (loaded in base.html), driven by attributes:
+    - x-data="{ revealed: false }" : declares a tiny reactive component whose
+      only state is the boolean `revealed`, scoped to this one <h2>.
+    - @mouseenter="revealed = true" : on hover, flip the state to true. Once
+      revealed it stays revealed (there is no mouseleave handler).
+    - x-text="revealed ? '{{ english }}' : '{{ glyphs }}'" : Alpine sets the
+      element's text reactively — glyphs while false, the English word once true.
+      The `{{ english }}` / `{{ glyphs }}` are substituted by Jinja on the SERVER
+      into the JS expression string; Alpine then evaluates that expression in the
+      BROWSER. (Two templating layers cooperating: Jinja bakes the values in, Alpine
+      does the runtime toggle.)
+    - :class="{ revealed: revealed }" : bind the CSS class `revealed` when the
+      state is true; resume.css keys the swipe animation off `.transforming-text.revealed`.
+  The literal `{{ glyphs }}` between the tags is the no-JS fallback: if Alpine
+  never loads, the server-rendered hieroglyphs still show.
+#}
 {% macro theader(english, glyphs) %}
 <h2 class="transforming-header section-header" x-data="{ revealed: false }">
   <span class="decorative-star">✧</span>
@@ -18,11 +65,14 @@
 {% block content %}
 <div class="resume-page">
   <div class="resume-container">
+    {# Four purely decorative L-shaped bracket corners, styled/positioned by the
+       .decorative-corner + .corner-* rules in resume.css. #}
     <div class="decorative-corner corner-top-left"></div>
     <div class="decorative-corner corner-top-right"></div>
     <div class="decorative-corner corner-bottom-left"></div>
     <div class="decorative-corner corner-bottom-right"></div>
 
+    {# Contact/identity header. Not a "transforming" header — plain static text. #}
     <header class="resume-header resume-section">
       <h1 class="resume-title">Logan Schwappach</h1>
       <div class="resume-location">San Fransisco, CA</div>
@@ -36,6 +86,9 @@
       </div>
     </header>
 
+    {# Each content section calls the theader() macro to get its hover-reveal
+       hieroglyph header, then lays out its own body. The glyph string is a
+       decorative stand-in for the English label passed alongside it. #}
     <section id="education" class="resume-section">
       {{ theader('Education', '𓂧𓅲𓎢𓄿𓏏𓇋𓈖') }}
       <div class="education-row">

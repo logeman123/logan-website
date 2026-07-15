@@ -1,2 +1,21 @@
+{#
+  _chat_reply.html — a BARE HTML fragment, NOT a full page.
+
+  This is what POST /chat returns for a single message exchange. Notice it does
+  NOT `{% extends "base.html" %}` and has no <html>/<head>/<body> — it is just
+  the two message bubbles. That is deliberate: chat.html already rendered the
+  full page, and HTMX's `hx-swap="beforeend"` will splice THIS snippet directly
+  into the existing #chat-log. Returning a whole document instead would nest a
+  second page inside the log. The leading underscore in the filename is the
+  common convention for "partial / include-only, not a routable page."
+
+  Context provided by the /chat route:
+    - `message` : the visitor's question, echoed back as the user bubble.
+    - `reply`   : the ai service's answer (already grounded via its tool-use
+                  loop against the content service), shown as the bot bubble.
+  Both are auto-escaped by Jinja here, so text is rendered as plain text.
+#}
+{# User's message bubble (right-aligned via .msg.user in styles.css). #}
 <div class="msg user">{{ message }}</div>
+{# Assistant's reply bubble (left-aligned via .msg.bot). #}
 <div class="msg bot">{{ reply }}</div>

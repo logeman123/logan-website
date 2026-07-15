@@ -1,9 +1,30 @@
+# =============================================================================
+# services/ai/pyproject.toml  (the AI / chat microservice)
+# =============================================================================
+# The ai service is Claude-backed chat behind an LLMProvider Protocol. Its
+# Chat.reply runs an agentic tool-use loop: the model requests tool calls, the
+# loop executes them by calling CONTENT's RPC tools (get_project/list_projects)
+# to ground answers in real data, then feeds the results back to the model.
+# Key insight: the RPC surface doubles as the AI/MCP tool surface. The default
+# provider is a deterministic FakeLLMProvider, so the whole stack runs offline
+# with no API key (real Claude via AnthropicProvider is opt-in — see .env.example
+# and docker-compose's LLM_PROVIDER).
+
 [project]
+# Distribution name hyphenated; import package underscored (see below). Unique
+# per service so all three install side-by-side in the shared workspace venv.
 name = "ai-service"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    # fastapi + uvicorn[standard] -> web framework + ASGI server.
+    # pydantic-settings -> env-driven config (SERVICE_TOKEN, CONTENT_URL,
+    #                      LLM_PROVIDER, LLM_API_KEY, LLM_BASE_URL, LLM_MODEL).
     "fastapi>=0.115", "uvicorn[standard]>=0.30", "pydantic-settings>=2.3",
+    # anthropic -> the official Claude SDK used by the real AnthropicProvider
+    #              (can be pointed at the Vercel AI Gateway via LLM_BASE_URL).
+    # rpc -> shared lib; provides the ContentRpcClient this service uses to make
+    #        the ai->content hop during the tool-use loop.
     "anthropic>=0.40", "rpc",
 ]
 
@@ -12,4 +33,5 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
+# Importable package `ai_service`; entrypoint is `ai_service.main:app`.
 packages = ["ai_service"]

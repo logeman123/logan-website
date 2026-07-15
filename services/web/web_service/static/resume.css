@@ -1,12 +1,33 @@
-/* Resume theme variables */
+/* ==========================================================================
+   resume.css — the bespoke "jungle" theme for the /resume page ONLY.
+
+   How it activates: resume.html sets base.html's `body_class` block to
+   "jungle-theme" and pulls THIS stylesheet in via the `head` block. So every
+   rule here is scoped either under `body.jungle-theme ...` (to override the
+   site-wide chrome from styles.css just on this page) or under the résumé's own
+   `.resume-*` classes (which only exist on this page). Nothing here leaks to the
+   rest of the site.
+
+   The look: a dark forest-green parchment framed in double-gold borders, ornate
+   Cinzel Decorative display type, emerald flourishes, and section headers that
+   swipe-reveal from hieroglyphs to English (paired with the Alpine logic in
+   resume.html). The bottom half of the file re-implements, in plain CSS, the
+   layout that the original Next.js version got from Tailwind utility classes.
+   ========================================================================== */
+
+/* Theme palette for the résumé, kept separate from styles.css's tokens so the
+   jungle look is self-contained. Referenced as var(--gold), var(--emerald), etc. */
 :root {
-  --forest-green: #0a2810;
-  --gold: #c4a164;
-  --light-gold: #e6d5b8;
-  --emerald: #50c878;
+  --forest-green: #0a2810;  /* deep background green */
+  --gold: #c4a164;          /* borders, headings, accents */
+  --light-gold: #e6d5b8;    /* primary body text on the dark bg */
+  --emerald: #50c878;       /* bright flourishes (list bullets, stars) */
 }
 
-/* Jungle theme applied to body when on resume page */
+/* Repaint the shared <body> for this page: dark green base with a faint, tiling
+   inline-SVG vine pattern (encoded as a data: URI so it needs no extra request),
+   light-gold text, and full-height coverage. This overrides styles.css's plain
+   white body — but only because <body> carries the jungle-theme class here. */
 body.jungle-theme {
   background-color: var(--forest-green);
   background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10c10 0 20 5 25 15s10 20 15 25' stroke='%23234010' fill='none' stroke-width='0.5'/%3E%3C/svg%3E");
@@ -14,7 +35,9 @@ body.jungle-theme {
   min-height: 100vh;
 }
 
-/* Jungle-themed navigation when on resume page */
+/* Re-skin the shared nav bar (defined in styles.css) for the jungle page:
+   green background, gold underline, ornate font, subtle glow. The `!important`
+   on the links below is needed to beat styles.css's own `.nav a` color rule. */
 body.jungle-theme .nav {
   background-color: var(--forest-green);
   border-bottom: 1px solid var(--gold);
@@ -32,7 +55,8 @@ body.jungle-theme .nav a:hover {
   text-shadow: 0 0 5px rgba(196, 161, 100, 0.3);
 }
 
-/* Resume page specific styles */
+/* The résumé's own full-bleed backdrop wrapper (the outermost div in
+   resume.html). Repeats the vine texture and pads down past the fixed nav. */
 .resume-page {
   background-color: var(--forest-green);
   background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10c10 0 20 5 25 15s10 20 15 25' stroke='%23234010' fill='none' stroke-width='0.5'/%3E%3C/svg%3E");
@@ -43,14 +67,19 @@ body.jungle-theme .nav a:hover {
   width: 100%;
 }
 
-/* Break out of the base layout's narrow 720px content column so the resume
-   can span the full viewport like the original site. */
+/* KEY LAYOUT OVERRIDE: styles.css caps `.container` at 720px and centers it for
+   comfortable reading. The résumé wants the whole viewport, so on jungle-theme
+   pages we drop that cap and padding, letting .resume-container control width.
+   This is the mechanism by which the résumé "breaks out" of the base column
+   without editing base.html or the shared styles. */
 body.jungle-theme main.container {
   max-width: none;
   padding: 0;
 }
 
-/* Resume container */
+/* The framed parchment panel: double-gold border, soft gold glow, and a
+   translucent dark-green fill so the vine texture faintly shows through.
+   Centered and width-capped at 1600px (its own, much wider cap). */
 .resume-container {
   border: 3px double var(--gold);
   box-shadow: 0 0 15px rgba(196, 161, 100, 0.2);
@@ -61,7 +90,9 @@ body.jungle-theme main.container {
   max-width: 1600px;
 }
 
-/* Resume sections */
+/* Each résumé section is its own bordered card. `position: relative` anchors the
+   ::before accent line; `overflow: hidden` clips the header's reveal-swipe
+   animation to the card's bounds. */
 .resume-section {
   border: 1px solid var(--gold);
   background: rgba(44, 24, 16, 0.2);
@@ -70,6 +101,8 @@ body.jungle-theme main.container {
   overflow: hidden;
 }
 
+/* A thin gold gradient hairline across the top edge of every section — fades in
+   from transparent at both ends for a subtle inlaid-metal look. */
 .resume-section::before {
   content: '';
   position: absolute;
@@ -116,19 +149,22 @@ body.jungle-theme main.container {
   color: var(--gold);
 }
 
-/* Resume lists */
+/* Résumé bullet lists: drop the default disc marker (list-style:none)... */
 .resume-list {
   list-style: none;
   color: var(--light-gold);
 }
 
+/* ...and substitute a decorative emerald "❧" (rotated floral heart / fleuron)
+   as a custom bullet via generated content. */
 .resume-list li::before {
   content: '❧';
   color: var(--emerald);
   margin-right: 8px;
 }
 
-/* Decorative corners */
+/* The four corner brackets from resume.html. Each is a 20px box that shows only
+   two of its borders; the corner-* rules below pick which two, forming an L. */
 .decorative-corner {
   position: absolute;
   width: 20px;
@@ -165,7 +201,11 @@ body.jungle-theme main.container {
 }
 
 
-/* Social link specific styles */
+/* Social link specific styles. `[href*="github"]` is a substring attribute
+   selector: `*=` matches any element whose href *contains* the string "github"
+   (as opposed to `^=` starts-with or `$=` ends-with). So these add asymmetric
+   padding to the GitHub/LinkedIn links purely by inspecting their URLs — no
+   extra classes needed in resume.html. */
 .social-link[href*="github"] {
   padding-right: 8px;
 }
@@ -174,7 +214,10 @@ body.jungle-theme main.container {
   padding-left: 8px;
 }
 
-/* TransformingHeader styles */
+/* --- TransformingHeader: the hieroglyph -> English reveal headers ---
+   These style the <h2> emitted by resume.html's theader() macro. The Alpine
+   attributes there handle the text swap + `.revealed` class toggle; the rules
+   here handle the ornate font and the animated "swipe" overlay. */
 .transforming-header {
   font-family: 'Cinzel Decorative', cursive;
   color: var(--gold);
@@ -187,6 +230,9 @@ body.jungle-theme main.container {
   width: 100%;
 }
 
+/* The word itself. `cursor:pointer` hints it is hoverable; the long eased
+   `transition` smooths the text change; `position:relative` anchors the ::after
+   swipe overlay below. */
 .transforming-text {
   cursor: pointer;
   position: relative;
@@ -197,6 +243,9 @@ body.jungle-theme main.container {
   text-align: left;
 }
 
+/* A gradient "curtain" laid over the word, parked off-screen to the left
+   (translateX(-100%)) until revealed. pointer-events:none so it never blocks
+   the hover. It animates across the text when `.revealed` is added. */
 .transforming-text::after {
   content: '';
   position: absolute;
@@ -209,6 +258,9 @@ body.jungle-theme main.container {
   pointer-events: none;
 }
 
+/* When Alpine adds `.revealed` (on hover), run the swipe: the curtain sweeps
+   from left to right across the (now English) word. `forwards` keeps it at the
+   final keyframe so it doesn't snap back. */
 .transforming-text.revealed::after {
   animation: revealSwipe 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
@@ -219,6 +271,8 @@ body.jungle-theme main.container {
   font-size: 0.8em;
 }
 
+/* The swipe motion: slide the curtain from fully left of the word to fully
+   right of it, passing across it exactly once. */
 @keyframes revealSwipe {
   0% {
     transform: translateX(-100%);

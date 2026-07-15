@@ -1,4 +1,32 @@
+# =============================================================================
+# ROOT / WORKSPACE pyproject.toml  (uv workspace manifest)
+# =============================================================================
+# This is the TOP of a `uv` workspace (uv is Astral's fast Python package &
+# project manager, a drop-in replacement for pip + virtualenv + pip-tools).
+# A "workspace" is uv's monorepo model: ONE virtualenv and ONE lockfile
+# (uv.lock) shared across several local packages that can depend on each other.
+#
+# How the whole system fits together (see per-service files for detail):
+#   rpc/               -> shared library: ServiceClient, ToolRegistry, the
+#                         RPC router, the RPCError->HTTP status mapping, and the
+#                         Pydantic contracts (content_rpc / ai_rpc) that are the
+#                         single source of truth imported by BOTH a service and
+#                         its callers.
+#   services/content   -> owns project data (Markdown+frontmatter), exposes
+#                         list_projects/get_project over /rpc/.
+#   services/ai        -> Claude-backed chat; its RPC tool surface doubles as
+#                         the AI/MCP tool surface; grounds answers by calling
+#                         content's RPC tools in an agentic tool-use loop.
+#   services/web       -> the BFF (backend-for-frontend): owns NO data, just
+#                         orchestrates content + ai over HTTP+JSON RPC and
+#                         renders Jinja/HTMX/Alpine pages.
+# The three services talk to each other over HTTP+JSON using the `rpc` library.
+
 [project]
+# This root project exists mainly to define the workspace + dev tooling.
+# It "depends on" the three services so `uv sync` at the root installs the
+# entire stack into the single shared virtualenv (see [tool.uv.sources] below,
+# which redirects these names to the local workspace members instead of PyPI).
 name = "logan-website"
 version = "0.1.0"
 description = "Personal site — Python + HTMX microservices"
@@ -6,19 +34,40 @@ requires-python = ">=3.12"
 dependencies = ["content-service", "ai-service", "web-service"]
 
 [tool.uv.workspace]
+# The workspace members: the shared `rpc` lib plus every folder under services/.
+# uv discovers each member's own pyproject.toml and links them into one env.
 members = ["rpc", "services/*"]
 
 [tool.uv]
+# `package = false` marks the ROOT itself as a "virtual" project: it is a
+# coordination point, not something that gets built into a wheel/installed as a
+# package. The real installable packages are the workspace members below.
 package = false
 
 [tool.uv.sources]
+# Dependency-source overrides. Without these, a dependency named e.g.
+# "content-service" would be fetched from PyPI. `workspace = true` tells uv to
+# satisfy each of these names from the LOCAL workspace member instead. This is
+# what makes intra-monorepo deps (a service depending on `rpc`) resolve to the
+# in-repo source, so editing rpc/ is immediately visible to every service.
 rpc = { workspace = true }
 content-service = { workspace = true }
 ai-service = { workspace = true }
 web-service = { workspace = true }
 
 [dependency-groups]
+# The `dev` group is installed for local development/CI but excluded in the
+# Docker images (see the Dockerfiles' `uv sync --no-dev`). It holds tooling that
+# production containers don't need:
+#   pytest -> test runner        httpx  -> HTTP client used by tests (and by the
+#   honcho -> runs Procfile.dev (multi-process dev without Docker)
+#   ruff   -> linter/formatter
+# httpx also underpins the in-process e2e test bridge (MockTransport).
 dev = ["pytest>=8", "httpx>=0.27", "honcho>=2", "ruff>=0.6"]
 
 [tool.pytest.ini_options]
+# Where pytest looks for tests. Each service keeps its own unit tests next to
+# its code (fast, no network thanks to the DI/Protocol seams), and tests/e2e
+# wires the REAL apps together in-process via an httpx MockTransport -> Starlette
+# TestClient bridge (so cross-service RPC is exercised without opening sockets).
 testpaths = ["rpc/tests", "services/content/tests", "services/ai/tests", "services/web/tests", "tests/e2e"]

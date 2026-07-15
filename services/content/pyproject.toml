@@ -1,10 +1,29 @@
+# =============================================================================
+# services/content/pyproject.toml  (the CONTENT microservice)
+# =============================================================================
+# The content service OWNS the project data. It reads Markdown + frontmatter
+# files from data/projects/ (FileContentRepository) and exposes list_projects /
+# get_project as RPC tools over /rpc/. Its ContentRepository is a Protocol, so
+# tests can swap in InMemoryContentRepository with no network or filesystem.
+# The ai and web services reach it purely over HTTP+JSON via the `rpc` client.
+
 [project]
+# NOTE the distribution name has a hyphen ("content-service") while the import
+# package below uses an underscore ("content_service"). This is the normal
+# Python convention (PyPI names hyphenate, importable modules cannot). Each
+# service gets a UNIQUE package name so they coexist in the one shared venv.
 name = "content-service"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    # fastapi + uvicorn[standard] -> the web framework and its ASGI server.
     "fastapi>=0.115", "uvicorn[standard]>=0.30", "pydantic-settings>=2.3",
+    # pydantic-settings -> loads config (e.g. SERVICE_TOKEN) from env vars.
+    # python-frontmatter -> parses the YAML frontmatter atop each Markdown file.
+    # markdown -> renders the Markdown body to HTML.
     "python-frontmatter>=1.1", "markdown>=3.6", "rpc",
+    # "rpc" -> the shared library; resolved to the local workspace member by the
+    # root pyproject's [tool.uv.sources]. Brings in the contracts + router.
 ]
 
 [build-system]
@@ -12,4 +31,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
+# The importable package name (underscored) that hatchling bundles: the code
+# lives under content_service/ and is imported as `content_service.main:app`
+# (see the Dockerfile / Procfile.dev entrypoints).
 packages = ["content_service"]

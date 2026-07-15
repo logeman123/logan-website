@@ -1,16 +1,49 @@
+# =============================================================================
+# docker-compose.yml  (the whole stack, containerized)
+# =============================================================================
+# Brings up all three microservices as separate containers on one Docker
+# network. The magic here is Docker's built-in DNS: each `services:` key becomes
+# a hostname reachable by the other containers. That's why CONTENT_URL is
+# "http://content:8001" (the container named `content`), not "localhost" — inside
+# the Docker network `localhost` would mean the caller's own container.
+#
+# Startup ordering + health: `depends_on ... condition: service_healthy` makes
+# Compose wait until a dependency's healthcheck passes before starting the
+# dependents. So content comes up first, then ai (which needs content for its
+# tool-use loop), then web (which needs both). This avoids races where web/ai
+# fire RPC calls at a backend that isn't listening yet.
+#
+# For a Docker-free dev loop, use Procfile.dev + honcho instead (same services,
+# run as local processes with --reload; see Procfile.dev).
 services:
+  # --- content service: owns the project data, has no upstream dependencies ---
   content:
+    # build.context is "." (repo root) so the ENTIRE workspace is available to
+    # the Dockerfile — required because uv must resolve the local `rpc` member.
     build: { context: ., dockerfile: services/content/Dockerfile }
+    # Shared bearer token the services present to each other (see rpc's
+    # token_provider injection + the AuthError->401 mapping). "dev-token" is a
+    # throwaway local value; real deployments would inject a secret.
     environment: { SERVICE_TOKEN: dev-token }
     healthcheck:
+      # Compose polls this command; the container is "healthy" only once GET
+      # /health returns 200. Uses stdlib urllib so no extra deps are needed in
+      # the slim image. Exit 0 = healthy, exit 1 = unhealthy.
       test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8001/health').status==200 else sys.exit(1)"]
-      interval: 5s
-      retries: 5
+      interval: 5s      # re-check every 5 seconds
+      retries: 5        # allow 5 failures before marking the container unhealthy
+  # --- ai service: needs content (grounds its answers via content's RPC tools) ---
   ai:
     build: { context: ., dockerfile: services/ai/Dockerfile }
     environment:
       SERVICE_TOKEN: dev-token
+      # Where the ai service reaches content — the Docker DNS name, not localhost.
       CONTENT_URL: http://content:8001
+      # LLM wiring, all overridable from the host's env / an .env file. The
+      # `${VAR:-default}` syntax means "use VAR if set, else the default".
+      # Defaulting LLM_PROVIDER to "fake" is deliberate: the stack runs fully
+      # offline with a deterministic fake model and NO API key. Set it to the
+      # real provider (plus LLM_API_KEY / LLM_BASE_URL) to talk to Claude.
       LLM_PROVIDER: ${LLM_PROVIDER:-fake}
       LLM_API_KEY: ${LLM_API_KEY:-}
       LLM_BASE_URL: ${LLM_BASE_URL:-}
@@ -18,18 +51,27 @@ services:
       test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8002/health').status==200 else sys.exit(1)"]
       interval: 5s
       retries: 5
+    # Wait for content to be HEALTHY (not merely started) before starting ai,
+    # so the ai->content RPC hop has a live backend from the first request.
     depends_on: { content: { condition: service_healthy } }
+  # --- web service: the BFF; fans out to BOTH content and ai over RPC ---
   web:
     build: { context: ., dockerfile: services/web/Dockerfile }
     environment:
       SERVICE_TOKEN: dev-token
+      # The two backends the BFF orchestrates, addressed by Docker DNS name.
       CONTENT_URL: http://content:8001
       AI_URL: http://ai:8002
+    # The ONLY service published to the host: browse the site at localhost:8000.
+    # content (8001) and ai (8002) stay internal to the Docker network.
     ports: ["8000:8000"]
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8000/health').status==200 else sys.exit(1)"]
       interval: 5s
       retries: 5
+    # web depends on BOTH backends being healthy first. (Even so, its routes
+    # still catch RPCError and render fallbacks, so a mid-run backend outage
+    # degrades gracefully rather than 500ing.)
     depends_on:
       content: { condition: service_healthy }
       ai: { condition: service_healthy }

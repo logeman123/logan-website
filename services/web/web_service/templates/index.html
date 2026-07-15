@@ -1,8 +1,22 @@
+{#
+  index.html — the site landing page ("/").
+
+  Right now this is a deliberately minimal "under construction" placeholder while
+  the rest of the site is built out. It is the simplest possible child of the
+  base layout: it inherits the default title, the default (empty) body_class, and
+  fills only the `content` block. Nothing here talks to the content or ai
+  services — it is pure static markup, unlike /work and /chat which fetch data
+  over RPC.
+#}
 {% extends "base.html" %}
 {% block content %}
+  {# Everything below only replaces base.html's `content` block. The nav header,
+     <title>, and <main class="container"> wrapper all still come from base.html. #}
   <section class="under-construction">
     <h1>Logan Schwappach</h1>
     <p class="tagline">Backend developer</p>
+    {# Static asset served by the web service from /static; fixed width/height
+       reserve layout space so the page doesn't reflow once the GIF loads. #}
     <img src="/static/construction.gif" alt="Under construction" width="216" height="216">
     <p class="uc-label">Under Construction</p>
   </section>

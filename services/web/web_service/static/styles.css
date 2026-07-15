@@ -1,24 +1,58 @@
+/* ==========================================================================
+   styles.css — the site-wide stylesheet for the web (BFF) service.
+
+   Loaded on EVERY page by base.html. It styles the shared chrome (nav, content
+   container) and the ordinary pages: the under-construction home, the /work
+   list + detail, and the /chat UI. The résumé page layers its own resume.css on
+   top and overrides pieces of this via the `body.jungle-theme` selectors there.
+
+   Design is deliberately minimal and utility-free (no framework): a handful of
+   CSS custom properties for color, a centered 720px reading column, and small
+   component rules. Keep it lightweight — this is a learning codebase.
+   ========================================================================== */
+
+/* Theme tokens (CSS custom properties). Defining colors once here means a
+   single edit re-themes the whole default site; var(--accent) etc. reference
+   them below. The résumé defines its OWN palette tokens in resume.css. */
 :root { --fg:#1a1a1a; --muted:#666; --accent:#4e4092; --bg:#fff; }
+/* border-box everywhere so padding/border count INSIDE declared widths — makes
+   the layout math predictable. */
 * { box-sizing: border-box; }
+/* Base typography: system font stack (fast, no download), 1.6 line-height. */
 body { margin:0; font:16px/1.6 system-ui,sans-serif; color:var(--fg); background:var(--bg); }
+/* Top nav bar: brand pushed to the left, links to the right via space-between. */
 .nav { display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:1px solid #eee; }
 .nav a { color:var(--fg); text-decoration:none; margin-left:1rem; }
 .brand { font-weight:600; margin-left:0; }
+/* The reading column: caps line length at 720px and centers it (margin auto).
+   NOTE: resume.css removes this cap for jungle-theme so the résumé goes wide. */
 .container { max-width:720px; margin:0 auto; padding:2rem 1.5rem; }
+/* Fluid hero heading: clamp() scales the size with the viewport but within
+   sane min/max bounds (2rem..3.5rem). */
 .hero h1 { font-size:clamp(2rem,6vw,3.5rem); font-weight:300; letter-spacing:-0.02em; margin:0 0 .25rem; }
+/* /work project cards: CSS grid stack with consistent gaps. */
 .cards { list-style:none; padding:0; display:grid; gap:.75rem; }
 .cards a { color:var(--fg); text-decoration:none; display:block; padding:1rem; border:1px solid #eee; border-radius:8px; }
 .cards a:hover { border-color:var(--accent); }
 .year { color:var(--muted); margin-left:.5rem; }
+/* .notice: the graceful-degradation banner shown by work_list/work_detail when
+   a content RPC call fails — an amber "info" style, never an error page. */
 .notice { color:#8a5000; background:#fff6e8; padding:.75rem 1rem; border-radius:8px; }
 .meta { color:var(--muted); }
+/* --- Chat UI (chat.html + _chat_reply.html fragments) --- */
+/* The transcript container HTMX appends message bubbles into. */
 .chat-log { display:grid; gap:.5rem; margin-bottom:1rem; }
+/* A message bubble; capped at 80% width so long lines wrap and sender is clear. */
 .msg { padding:.6rem .9rem; border-radius:10px; max-width:80%; }
+/* User messages hug the right edge (justify-self:end in the grid). */
 .msg.user { background:#eff0ff; justify-self:end; }
+/* Bot messages hug the left edge — classic two-sided chat alignment. */
 .msg.bot { background:#f5f5f5; justify-self:start; }
+/* The chat input row: input flexes to fill, button stays its natural width. */
 form { display:flex; gap:.5rem; }
 input[name=message] { flex:1; padding:.6rem .8rem; border:1px solid #ccc; border-radius:8px; }
 button { padding:.6rem 1rem; border:0; background:var(--accent); color:#fff; border-radius:8px; cursor:pointer; }
+/* --- Home page "under construction" placeholder (index.html) --- */
 .under-construction { text-align:center; padding-top:2rem; }
 .under-construction h1 { font-size:clamp(2rem,6vw,3.5rem); font-weight:300; letter-spacing:-0.02em; margin:0 0 .25rem; }
 .under-construction .tagline { color:var(--muted); }

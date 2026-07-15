@@ -1,10 +1,30 @@
+# =============================================================================
+# services/web/pyproject.toml  (the WEB service — the BFF / frontend)
+# =============================================================================
+# The web service is the Backend-For-Frontend. It owns NO data of its own; it
+# orchestrates the content and ai services over HTTP+JSON RPC and renders pages
+# with Jinja2 + HTMX + Alpine. Its routes (/, /work, /work/{slug}, /chat,
+# /resume) all catch RPCError and render fallbacks instead of 500ing — graceful
+# degradation when a backend is down. deps.py is the ONE place the concrete RPC
+# clients are named (dependency injection wiring).
+
 [project]
+# Distribution name hyphenated; import package underscored (see below). Unique
+# per service so all three install side-by-side in the shared workspace venv.
 name = "web-service"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    # fastapi + uvicorn[standard] -> web framework + ASGI server.
+    # pydantic-settings -> env-driven config (SERVICE_TOKEN, CONTENT_URL, AI_URL).
     "fastapi>=0.115", "uvicorn[standard]>=0.30", "pydantic-settings>=2.3",
+    # jinja2 -> server-side HTML templating (rendered via Starlette's
+    #           TemplateResponse; note Starlette 1.3.1 uses the
+    #           TemplateResponse(request, name, context) signature).
+    # python-multipart -> required by FastAPI/Starlette to parse form-encoded
+    #           POST bodies, e.g. the HTMX chat form submissions.
     "jinja2>=3.1", "python-multipart>=0.0.9", "rpc",
+    # rpc -> shared lib; supplies ContentRpcClient + AiRpcClient used by deps.py.
 ]
 
 [build-system]
@@ -12,4 +32,5 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
+# Importable package `web_service`; entrypoint is `web_service.main:app`.
 packages = ["web_service"]
