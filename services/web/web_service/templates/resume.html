@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block body_class %}jungle-theme{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="/static/resume.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% macro theader(english, glyphs) %}
+<h2 class="transforming-header section-header" x-data="{ revealed: false }">
+  <span class="decorative-star">✧</span>
+  <span class="transforming-text" :class="{ revealed: revealed }" @mouseenter="revealed = true"
+        x-text="revealed ? '{{ english }}' : '{{ glyphs }}'">{{ glyphs }}</span>
+  <span class="decorative-star">✧</span>
+</h2>
+{% endmacro %}
+
+{% block content %}
+<div class="resume-page">
+  <div class="resume-container">
+    <div class="decorative-corner corner-top-left"></div>
+    <div class="decorative-corner corner-top-right"></div>
+    <div class="decorative-corner corner-bottom-left"></div>
+    <div class="decorative-corner corner-bottom-right"></div>
+
+    <header class="resume-header resume-section">
+      <h1 class="resume-title">Logan Schwappach</h1>
+      <div class="resume-location">San Fransisco, CA</div>
+      <div class="contact-info">
+        <div>lmschwappach.hws@gmail.com</div>
+        <div class="contact-links">
+          <a href="https://github.com/logeman123/" target="_blank" rel="noopener noreferrer" class="social-link">GitHub</a>
+          <div>(612) 964-8300</div>
+          <a href="https://www.linkedin.com/in/logan-schwappach-9b57221b4/" target="_blank" rel="noopener noreferrer" class="social-link">LinkedIn</a>
+        </div>
+      </div>
+    </header>
+
+    <section id="education" class="resume-section">
+      {{ theader('Education', '𓂧𓅲𓎢𓄿𓏏𓇋𓈖') }}
+      <div class="education-row">
+        <div>
+          <div class="entry-title institution">Hobart and William Smith Colleges, Geneva, NY</div>
+          <div class="date-text">May 2023</div>
+        </div>
+        <div class="education-details">
+          <div>Double Major, BA: Economics, International Relations <span class="gpa">GPA 3.16</span></div>
+          <div>Minor: Computer Science</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="honors" class="resume-section">
+      {{ theader('Honors', '𓉔𓈖𓂋𓋴') }}
+      <ul class="resume-list">
+        <li>Dean's List (2020-2023)</li>
+        <li>National Merit Scholar (2019)</li>
+      </ul>
+    </section>
+
+    <section id="experience" class="resume-section">
+      {{ theader('Experience', '𓇨𓊪𓂋𓇋𓈖𓎢') }}
+      <div class="experience-list">
+        <div class="experience-entry">
+          <div class="entry-title">Hoban Korean BBQ, Server</div>
+          <div class="date-text">Aug 2023 - April 2025</div>
+          <ul class="resume-list">
+            <li>Main server since February 2024, competent ability in bartending</li>
+            <li>Skillful knowledge in Korean cuisine, regular attendance and covers working an average of 5 days a week</li>
+            <li>Additionally built up skills in both the food running positions and hosting positions, helped prepare new hires for hosting, serving and more</li>
+          </ul>
+        </div>
+        <div class="experience-entry">
+          <div class="entry-title">Anne McGilvray and Company Inc, Sales</div>
+          <div class="date-text">Jun – Aug 2022</div>
+          <ul class="resume-list">
+            <li>Attended the Atlanta and Las Vegas Gift Market representing vendors of AMCI, creating connections between buyers and vendors, trained new sales reps</li>
+            <li>Personally oversaw the sale of more than $75,000 worth of wholesale gifts</li>
+          </ul>
+        </div>
+        <div class="experience-entry">
+          <div class="entry-title">SeaBay (Summer Sandbox), Co-Founder, Geneva, NY</div>
+          <div class="date-text">May – Aug 2021</div>
+          <ul class="resume-list">
+            <li>Designed and coded front end for a functional market website to sell and trade Coral products using wordpress.org</li>
+            <li>Interviewed 120+ prospective customers, synthesized and presented information in a concise 6-minute presentation to coaches, startup accelerator teammates, and investors</li>
+          </ul>
+        </div>
+        <div class="experience-entry">
+          <div class="entry-title">VSCO, Intern, San Francisco, CA</div>
+          <div class="date-text">Apr – May 2019</div>
+          <ul class="resume-list">
+            <li>Conducted 50+ interviews of local high school students for market research focusing on changing trends in membership among younger demographics</li>
+            <li>Compiled extensive survey data using excel, created a detailed and engaging marketing presentation for high level executive and company employees</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="resume-section">
+      {{ theader('Projects', '𓊪𓂋𓆓𓎢𓏏𓋴') }}
+      <ul class="resume-list">
+        <li>Organizer For HWS: International Debate Round Robin (2021)</li>
+        <li>Volunteer Building Cat Houses for St. Gabriel the Archangel Church (2019)</li>
+        <li>Volunteer Animal Humane Society as Animal Technician (2017)</li>
+      </ul>
+    </section>
+
+    <section id="skills" class="resume-section">
+      {{ theader('Activities & Skills', '𓄿𓎢𓏏𓇋𓆯𓇋𓏏𓇋𓋴') }}
+      <div class="skills-columns">
+        <div>
+          <div class="section-title">Activities</div>
+          <ul class="resume-list">
+            <li>(Varsity) Debate and Speech</li>
+            <li>(VP) Chess Club</li>
+            <li>Pre-Orientation Adventure Program (POAP)</li>
+          </ul>
+        </div>
+        <div>
+          <div class="section-title">Skills</div>
+          <ul class="resume-list">
+            <li>Language: Intermediate Spanish, Basic Korean</li>
+            <li>Computer: Microsoft Office Suite, Java, Python</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}
