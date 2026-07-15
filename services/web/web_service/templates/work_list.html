@@ -1,0 +1,35 @@
+{#
+  work_list.html — the "/work" index page listing all projects.
+
+  Data flow (graceful degradation in action):
+    The /work route in the web service does NOT own project data. It calls the
+    content service's `list_projects` RPC tool via a typed ContentRpcClient. The
+    route hands this template two context values:
+      - `projects` : a list of project summaries (each has .slug/.title/.blurb).
+      - `error`    : a human-readable string ONLY if the content service was
+                     unreachable or errored. The route catches RPCError and
+                     renders this page with `error` set instead of returning a
+                     500, so a backend outage degrades to a friendly notice.
+    Because both `projects` (possibly empty) and `error` (possibly set) can vary
+    independently, the markup below handles all four combinations.
+#}
+{% extends "base.html" %}
+{% block title %}Work — Logan Schwappach{% endblock %}
+{% block content %}
+  <h1>Work</h1>
+  {# Graceful-degradation surface: shown only when the content RPC hop failed. #}
+  {% if error %}<p class="notice">{{ error }}</p>{% endif %}
+  <ul class="cards">
+    {# Jinja for/else: the `{% else %}` branch runs only when `projects` is
+       empty (or missing) — i.e. the loop body never executed. #}
+    {% for p in projects %}
+      {# Each card links to the detail route /work/<slug>; slug/title/blurb come
+         straight from the content service's project contract. #}
+      <li><a href="/work/{{ p.slug }}"><strong>{{ p.title }}</strong> — {{ p.blurb }}</a></li>
+    {% else %}
+      {# No projects. Suppress the "empty" message when the list is empty
+         *because of* an error — the notice above already explains that case. #}
+      {% if not error %}<li>No projects yet.</li>{% endif %}
+    {% endfor %}
+  </ul>
+{% endblock %}

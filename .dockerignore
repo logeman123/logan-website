@@ -1,0 +1,31 @@
+# =============================================================================
+# .dockerignore  (what to EXCLUDE from the Docker build context)
+# =============================================================================
+# The Dockerfiles do `COPY . /app` with the build context set to the repo root
+# (see docker-compose). Without this file, that would sweep local-only clutter
+# and secrets into every image and slow the build by shipping a bloated context
+# to the Docker daemon. Each non-comment line is a path pattern to skip; a
+# leading `!` is a re-INCLUDE (an exception to an earlier exclusion).
+#
+# IMPORTANT: like .gitignore, this format only treats `#` as a comment when it
+# is the FIRST character on the line — inline "pattern  # note" is NOT supported
+# (the `#` would become part of the pattern). So every note below is its own line.
+
+# The local virtualenv — the image rebuilds it via `uv sync`.
+.venv
+# Compiled *.pyc caches from any directory depth.
+**/__pycache__
+# pytest's run cache (dev/CI artifact, not needed at runtime).
+.pytest_cache
+# ruff's lint cache (dev artifact).
+.ruff_cache
+# Documentation — not needed inside the runtime image.
+docs
+# The entire git history (large, and never needed at runtime).
+.git
+# Local secrets/config: MUST NOT be baked into an image.
+.env
+# Any environment-specific dotenv variants (also secret).
+.env.*
+# ...but DO keep the committed, secret-free template file.
+!.env.example

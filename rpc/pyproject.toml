@@ -1,0 +1,40 @@
+# =============================================================================
+# rpc/pyproject.toml  (the SHARED library every service depends on)
+# =============================================================================
+# `rpc` is the wire-level glue of the monorepo. It is imported by all three
+# services and by their callers, so its Pydantic contracts stay the single
+# source of truth for request/response shapes. It provides:
+#   - ServiceClient : a thin httpx wrapper whose base_url / token_provider /
+#                     transport are ALL injected (DI at the wire level). It
+#                     caches the bearer token and wraps httpx transport errors
+#                     as ServiceError so a caller's `except RPCError` can
+#                     gracefully degrade when a backend is unreachable.
+#   - ToolRegistry + create_rpc_router : expose tools at POST /rpc/<tool> and
+#                     GET /rpc/ (the RPC dispatch surface).
+#   - add_rpc_error_handler : maps the RPCError hierarchy to HTTP status codes
+#                     (InvalidRequest=400, AuthError=401, NotFound=404,
+#                     ServiceError=500) using each exception's status_code.
+#   - content_rpc / ai_rpc : the typed contracts + typed clients
+#                     (ContentRpcClient / AiRpcClient) that structurally satisfy
+#                     the ContentSource / AiSource Protocols.
+
+[project]
+name = "rpc"
+version = "0.1.0"
+requires-python = ">=3.12"
+# httpx    -> the async HTTP client ServiceClient wraps for cross-service calls.
+# pydantic -> defines/validates the shared RPC contracts (the data models).
+# fastapi  -> needed here because rpc ships the router + error-handler helpers
+#             that services mount into their FastAPI apps.
+dependencies = ["httpx>=0.27", "pydantic>=2.7", "fastapi>=0.115"]
+
+[build-system]
+# hatchling is the build backend (the tool that turns this source tree into an
+# installable wheel). It is lightweight and the uv-recommended default.
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# Tells hatchling which import package to bundle into the wheel. The importable
+# module here is literally `rpc` (i.e. `import rpc`), matching the folder name.
+packages = ["rpc"]

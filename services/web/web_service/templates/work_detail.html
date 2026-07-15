@@ -1,0 +1,40 @@
+{#
+  work_detail.html — a single project page ("/work/{slug}").
+
+  Data flow:
+    The /work/{slug} route calls the content service's `get_project` RPC tool
+    with the slug. Two outcomes reach this template:
+      - success -> `project` is a full project object (title, role, tech list,
+        highlights, and body_html — HTML already rendered from Markdown by the
+        content service).
+      - missing/unreachable -> the route catches the NotFound / RPCError and
+        renders this page with `project = None` and an optional `error` string.
+        Again: no 500 leaks to the visitor (graceful degradation).
+    So the whole template branches on whether `project` is truthy.
+#}
+{% extends "base.html" %}
+{# Title reflects the outcome: the project title on success, "Not found" if the
+   route passed us no project. The `X if C else Y` is Jinja's inline conditional. #}
+{% block title %}{{ project.title if project else "Not found" }}{% endblock %}
+{% block content %}
+  {% if project %}
+    <article>
+      <h1>{{ project.title }}</h1>
+      {# Meta line: role, plus a "· "-joined tech list when tech is present.
+         `join(", ")` is a Jinja filter turning the list into "a, b, c". #}
+      <p class="meta">{{ project.role }}{% if project.tech %} · {{ project.tech | join(", ") }}{% endif %}</p>
+      {# Optional bullet list of highlights, only rendered when non-empty. #}
+      {% if project.highlights %}<ul>{% for h in project.highlights %}<li>{{ h }}</li>{% endfor %}</ul>{% endif %}
+      {# `| safe` disables Jinja's HTML auto-escaping. This is intentional and
+         safe ONLY because body_html is trusted, first-party content: the content
+         service converts the author's own Markdown files to HTML. Never apply
+         `safe` to untrusted/user-supplied input — it would allow XSS. #}
+      <div class="body">{{ project.body_html | safe }}</div>
+    </article>
+  {% else %}
+    {# Fallback branch: unknown slug or the content RPC hop failed. Show the
+       route-supplied `error`, or a generic message via Jinja's `or` default. #}
+    <p class="notice">{{ error or "That project could not be found." }}</p>
+    <p><a href="/work">← Back to work</a></p>
+  {% endif %}
+{% endblock %}
