@@ -52,7 +52,7 @@
     {
       "id": 6,
       "subject": "Task 6: AI chat orchestration + content-backed tools",
-      "status": "pending",
+      "status": "completed",
       "batch": "B3",
       "blockedBy": [5],
       "description": "**Goal:** Implement the agentic tool-use loop (Chat.reply) and content-backed tool executor, depending only on LLMProvider + ContentSource abstractions.\n\n**Verify:** uv run pytest services/ai/tests/test_chat.py -v\n\n```json:metadata\n{\"files\": [\"services/ai/ai_service/tools.py\", \"services/ai/ai_service/chat.py\", \"services/ai/tests/test_chat.py\"], \"verifyCommand\": \"uv run pytest services/ai/tests/test_chat.py -v\", \"acceptanceCriteria\": [\"tool specs\", \"execute_tool grounds + survives errors\", \"loop tool_use/end_turn/max_steps\"]}\n```"
